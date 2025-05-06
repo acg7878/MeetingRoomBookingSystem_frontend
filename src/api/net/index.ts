@@ -21,13 +21,18 @@ const defaultError = (error: AxiosError): void => {
   }
 };
 
-const defaultFailure = (message: string, status?: number, url?: string): void => {
+const defaultFailure = (
+  message: string,
+  status?: number,
+  url?: string
+): void => {
   console.warn(`请求地址: ${url}, 状态码: ${status}, 错误信息: ${message}`);
   ElMessage.warning(message);
 };
 
 const takeAccessToken = (): string | null => {
-  const str = localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName);
+  const str =
+    localStorage.getItem(authItemName) || sessionStorage.getItem(authItemName);
   if (!str) return null;
   const authObj = JSON.parse(str);
   if (new Date(authObj.expire) <= new Date()) {
@@ -38,7 +43,11 @@ const takeAccessToken = (): string | null => {
   return authObj.token;
 };
 
-const storeAccessToken = (remember: boolean, token: string, expire: string): void => {
+const storeAccessToken = (
+  remember: boolean,
+  token: string,
+  expire: string
+): void => {
   const authObj = {
     token: token,
     expire: expire,
@@ -61,21 +70,27 @@ const internalPost = <T>(
   data: any,
   headers: Record<string, string>,
   success: (data: T) => void,
-  failure: (message: string, code?: number, url?: string) => void = defaultFailure,
+  failure: (
+    message: string,
+    code?: number,
+    url?: string
+  ) => void = defaultFailure,
   error: (err: AxiosError) => void = defaultError
 ): void => {
   axios
     .post(url, data, { headers: headers })
-    .then(({ data }: AxiosResponse<{ code: number; message: string; data: T }>) => {
-      if (data.code === 200) {
-        success(data.data);
-      } else if (data.code === 401) {
-        failure("登录状态已过期，请重新登录！");
-        deleteAccessToken(true);
-      } else {
-        failure(data.message, data.code, url);
+    .then(
+      ({ data }: AxiosResponse<{ code: number; message: string; data: T }>) => {
+        if (data.code === 200) {
+          success(data.data);
+        } else if (data.code === 401) {
+          failure("登录状态已过期，请重新登录！");
+          deleteAccessToken(true);
+        } else {
+          failure(data.message, data.code, url);
+        }
       }
-    })
+    )
     .catch((err: AxiosError) => error(err));
 };
 
@@ -83,21 +98,27 @@ const internalGet = <T>(
   url: string,
   headers: Record<string, string>,
   success: (data: T) => void,
-  failure: (message: string, code?: number, url?: string) => void = defaultFailure,
+  failure: (
+    message: string,
+    code?: number,
+    url?: string
+  ) => void = defaultFailure,
   error: (err: AxiosError) => void = defaultError
 ): void => {
   axios
     .get(url, { headers: headers })
-    .then(({ data }: AxiosResponse<{ code: number; message: string; data: T }>) => {
-      if (data.code === 200) {
-        success(data.data);
-      } else if (data.code === 401) {
-        failure("登录状态已过期，请重新登录！");
-        deleteAccessToken(true);
-      } else {
-        failure(data.message, data.code, url);
+    .then(
+      ({ data }: AxiosResponse<{ code: number; message: string; data: T }>) => {
+        if (data.code === 200) {
+          success(data.data);
+        } else if (data.code === 401) {
+          failure("登录状态已过期，请重新登录！");
+          deleteAccessToken(true);
+        } else {
+          failure(data.message, data.code, url);
+        }
       }
-    })
+    )
     .catch((err: AxiosError) => error(err));
 };
 
@@ -106,7 +127,11 @@ const login = (
   password: string,
   remember: boolean,
   success: (data: { username: string; token: string; expire: string }) => void,
-  failure: (message: string, code?: number, url?: string) => void = defaultFailure
+  failure: (
+    message: string,
+    code?: number,
+    url?: string
+  ) => void = defaultFailure
 ): void => {
   internalPost<{ username: string; token: string; expire: string }>(
     "/api/auth/login",
@@ -125,26 +150,42 @@ const post = <T>(
   url: string,
   data: any,
   success: (data: T) => void,
-  failure: (message: string, code?: number, url?: string) => void = defaultFailure
+  failure: (
+    message: string,
+    code?: number,
+    url?: string
+  ) => void = defaultFailure
 ): void => {
   internalPost(url, data, accessHeader(), success, failure);
 };
 
 const logout = (
   success: () => void,
-  failure: (message: string, code?: number, url?: string) => void = defaultFailure
+  failure: (
+    message: string,
+    code?: number,
+    url?: string
+  ) => void = defaultFailure
 ): void => {
-  get("/api/auth/logout", () => {
-    deleteAccessToken();
-    ElMessage.success("退出登录成功");
-    success();
-  }, failure);
+  get(
+    "/api/auth/logout",
+    () => {
+      deleteAccessToken();
+      ElMessage.success("退出登录成功");
+      success();
+    },
+    failure
+  );
 };
 
 const get = <T>(
   url: string,
   success: (data: T) => void,
-  failure: (message: string, code?: number, url?: string) => void = defaultFailure
+  failure: (
+    message: string,
+    code?: number,
+    url?: string
+  ) => void = defaultFailure
 ): void => {
   internalGet(url, accessHeader(), success, failure);
 };
