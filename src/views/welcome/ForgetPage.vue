@@ -80,7 +80,7 @@
 <script lang="ts" setup>
 import { reactive, ref } from 'vue';
 import { EditPen, Lock, Message } from '@element-plus/icons-vue';
-import { get, post } from '../../api/net';
+import { get, post } from '../../api/auth';
 import { ElMessage } from 'element-plus';
 import router from '../../router';
 
