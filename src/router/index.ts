@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import { unauthorized } from "@/api/net";
+import { unauthorized } from "@/api/auth";
 
 export const staticRoutes = [
   {
@@ -36,14 +36,32 @@ export const staticRoutes = [
       },
     ],
   },
+  {
+    path: "/403",
+    name: "403",
+    component: () => import("../views/error/403.vue"),
+    meta: { title: "403 禁止访问" },
+  },
+  {
+    path: "/404",
+    name: "404",
+    component: () => import("../views/error/404.vue"),
+    meta: { title: "404 页面未找到" },
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import("../views/error/404.vue"),
+    meta: { title: "404 页面未找到" },
+  },
 ];
 
 export const dynamicRoutes = [
   {
     path: "/admin/meeting-rooms",
-    name: "AdminMeetingRooms",
-    meta: { title: "MeetingRoomManagement", roles: ["admin"] },
-    //component: () => import("@/views/admin/MeetingRoomManagement.vue"),
+    name: "MeetingRoomSetting",
+    meta: { title: "MeetingRoomSetting", roles: ["admin"] },
+    component: () => import("@/views/admin/MeetingRoomSetting.vue"),
   },
   {
     path: "/admin/orders",

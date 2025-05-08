@@ -1,6 +1,7 @@
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
 import router from "../../router";
+import { usePermissionStore } from "@/store/permissions";
 
 const authItemName = "authorize";
 // 设置后端基础地址
