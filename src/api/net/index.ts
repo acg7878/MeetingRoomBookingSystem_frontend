@@ -126,7 +126,7 @@ const login = (
   username: string,
   password: string,
   remember: boolean,
-  success: (data: { username: string; token: string; expire: string }) => void,
+  success: (data: { username: string; token: string; expire: string;}) => void,
   failure: (
     message: string,
     code?: number,
@@ -192,4 +192,4 @@ const get = <T>(
 
 const unauthorized = (): boolean => !takeAccessToken();
 
-export { post, get, login, logout, unauthorized };
+export { post, get, login, logout, unauthorized, takeAccessToken };
