@@ -119,7 +119,7 @@ import { EditPen, Lock, Message, User } from "@element-plus/icons-vue";
 import router from "../../router";
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { get, post } from "../../api/net";
+import { get, post } from "../../api/auth";
 
 // 定义表单数据类型
 interface Form {

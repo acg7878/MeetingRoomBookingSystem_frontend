@@ -19,15 +19,19 @@ import Header from '@/components/layout/AppHeader.vue';
 import Sidebar from '@/components/layout/AppSidebar.vue';
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .el-aside {
-  float: left; 
-  height: 100vh; 
-  position: fixed; /* 固定侧边栏位置 */
-  top: 60px; /* 根据头部高度调整 */
+  position: fixed;
+  top: 60px; /* Header 高度 */
   left: 0;
-  z-index: 0; /* 确保侧边栏层级低于头部 */
+  bottom: 0;
+  width: 200px; /* 根据你的侧边栏宽度调整 */
+  height: calc(100vh - 60px); /* 减去 Header 高度 */
+  overflow-y: auto;
+  background-color: #fff; /* 可选 */
+  z-index: 0;
 }
+
 
 .el-header {
   width: 100%; 
@@ -36,9 +40,10 @@ import Sidebar from '@/components/layout/AppSidebar.vue';
 }
 
 .el-container:nth-child(2) {
-  padding-top: 60px; 
-  padding-left: 200px; /* 根据侧边栏宽度调整 */
+  padding-top: 60px; /* 顶部偏移 Header */
+  margin-left: 200px; /* 与侧边栏宽度一致 */
 }
+
 
 .fade-transform-enter-active,
 .fade-transform-leave-active {

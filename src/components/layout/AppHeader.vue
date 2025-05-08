@@ -26,14 +26,14 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { ArrowDown } from '@element-plus/icons-vue';
+import { logout } from '@/api/auth';
+import { ElMessage } from 'element-plus';
 
 const router = useRouter();
 const userInfo = ref({
   name: '张三',
   avatar: 'https://example.com/avatar.jpg'
 });
-// 删除 notificationCount 和 notifications 变量
-// 删除 notificationDialogVisible 变量
 
 const handleCommand = (command: string) => {
   switch (command) {
@@ -44,13 +44,17 @@ const handleCommand = (command: string) => {
       router.push('/settings');
       break;
     case 'logout':
-      // 退出登录逻辑
-      localStorage.removeItem('token');
-      router.push('/login');
+      logout(
+        () => {
+          router.push('/');
+        },
+        (message) => {
+          ElMessage.error(message);
+        }
+      );
       break;
   }
 };
-// 删除 showNotifications 函数
 </script>
 
 <style scoped>
