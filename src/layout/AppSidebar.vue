@@ -53,7 +53,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { usePermissionStore } from '@/store/permissions';
+import { usePermissionStore } from '@/store/modules/permissions';
 import { House, Document, User, ArrowLeft, ArrowRight } from '@element-plus/icons-vue';
 
 const isCollapse = ref(false);

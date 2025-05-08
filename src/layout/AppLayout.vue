@@ -15,8 +15,8 @@
 </template>
 
 <script setup lang="ts">
-import Header from '@/components/layout/AppHeader.vue';
-import Sidebar from '@/components/layout/AppSidebar.vue';
+import Header from '@/layout/AppHeader.vue';
+import Sidebar from '@/layout/AppSidebar.vue';
 </script>
 
 <style lang="scss" scoped>
