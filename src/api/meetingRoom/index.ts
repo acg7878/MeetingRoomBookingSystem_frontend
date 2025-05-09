@@ -1,4 +1,9 @@
 import axios from "axios";
+import { takeAccessToken } from '@/api/auth';
+
+
+
+
 import type {
   MeetingRoom,
   MeetingRoomCreateData,
@@ -7,6 +12,14 @@ import type {
 } from "./index.types";
 
 const BASE_URL = "http://localhost:8080";
+
+axios.interceptors.request.use(config => {
+  const token = takeAccessToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 const handleRequest = async <T>(
   request: Promise<any>
