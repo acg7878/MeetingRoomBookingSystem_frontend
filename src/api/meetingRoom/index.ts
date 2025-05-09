@@ -1,19 +1,17 @@
 import axios from "axios";
-import { takeAccessToken } from '@/api/auth';
-
-
-
+import { takeAccessToken } from "@/api/auth";
 
 import type {
   MeetingRoom,
   MeetingRoomCreateData,
   MeetingRoomUpdateData,
   ResponseData,
+
 } from "./index.types";
 
 const BASE_URL = "http://localhost:8080";
 
-axios.interceptors.request.use(config => {
+axios.interceptors.request.use((config) => {
   const token = takeAccessToken();
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -54,3 +52,10 @@ export const getMeetingRoomList = () =>
 
 export const updateMeetingRoom = (data: MeetingRoomUpdateData) =>
   handleRequest<void>(axios.put(`${BASE_URL}/meeting-rooms/update`, data));
+
+export const getMeetingRoomEquipment = (meetingRoomName: String) =>
+  handleRequest<string[]>(
+    axios.get(`${BASE_URL}/meeting-rooms/equipment`, {
+      params: { meetingRoomName },
+    })
+  );
