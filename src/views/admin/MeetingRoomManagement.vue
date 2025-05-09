@@ -4,38 +4,52 @@
       <el-button type="primary" @click="openCreateDialog">新增会议室</el-button>
     </el-row>
 
-    <el-table :data="meetingRooms" border style="width: 100%">
-      <el-table-column label="会议室名称" prop="roomName" />
-      <el-table-column label="会议室类型" prop="roomType" />
-      <el-table-column label="座位数" prop="seatCount" />
-      <el-table-column label="价格/小时" prop="pricePerHour" />
-      <el-table-column label="状态" prop="status" />
+    <el-table :data="pagedMeetingRooms" border style="width: 100%">
+      <el-table-column label="会议室名称" prop="roomName" align="center" />
+      <el-table-column label="会议室类型" prop="roomType" align="center" />
+      <el-table-column label="座位数" prop="seatCount" align="center" />
+      <el-table-column label="价格/小时" prop="pricePerHour" align="center" />
+      <el-table-column prop="status" label="状态" align="center">
+        <template #default="{ row }">
+          <el-tag :type="statusColorMap[row.status]" disable-transitions>
+            {{ statusMap[row.status] || row.status }}
+          </el-tag>
+        </template>
+      </el-table-column>
 
-      <el-table-column label="操作">
+      <el-table-column label="操作" align="center">
         <template v-slot="scope">
           <el-button
             @click="openUpdateDialog(scope.row)"
-            type="text"
+            type="primary"
             size="small"
+            plain
             >修改</el-button
           >
           <el-button
-            @click="deleteRoom(scope.row.roomName)"
-            type="text"
+            @click="deleteMeetingRoomHandle(scope.row.roomName)"
+            type="danger"
             size="small"
-            style="color: red"
+            plain
             >删除</el-button
           >
         </template>
       </el-table-column>
     </el-table>
 
-    <!-- 新增会议室对话框 -->
-    <el-dialog
-      :visible.sync="createDialogVisible"
-      title="新增会议室"
-      width="40%"
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[5, 10, 20, 50]"
+      :page-size="pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="meetingRooms.length"
     >
+    </el-pagination>
+
+    <!-- 新增会议室对话框 -->
+    <el-dialog v-model="createDialogVisible" title="新增会议室" width="40%">
       <el-form
         :model="createForm"
         ref="createFormRef"
@@ -54,7 +68,7 @@
         <el-form-item label="座位数" prop="seatCount">
           <el-input-number v-model="createForm.seatCount" :min="1" />
         </el-form-item>
-        <el-form-item label="租赁价格（每小时）" prop="pricePerHour">
+        <el-form-item label="租赁价格" prop="pricePerHour">
           <el-input-number v-model="createForm.pricePerHour" :min="0" />
         </el-form-item>
         <el-form-item label="会议室状态" prop="status">
@@ -76,18 +90,14 @@
     </el-dialog>
 
     <!-- 修改会议室对话框 -->
-    <el-dialog
-      :visible.sync="updateDialogVisible"
-      title="修改会议室"
-      width="40%"
-    >
+    <el-dialog v-model="updateDialogVisible" title="修改会议室" width="40%">
       <el-form
         :model="updateForm"
         ref="updateFormRef"
         :rules="updateRules"
         label-width="100px"
       >
-        <el-form-item label="会议室名称" prop="roomName">
+        <el-form-item label="会议室名称" prop="newRoomName">
           <el-input v-model="updateForm.newRoomName" />
         </el-form-item>
         <el-form-item label="会议室类型" prop="roomType">
@@ -99,7 +109,7 @@
         <el-form-item label="座位数" prop="seatCount">
           <el-input-number v-model="updateForm.seatCount" :min="1" />
         </el-form-item>
-        <el-form-item label="租赁价格（每小时）" prop="pricePerHour">
+        <el-form-item label="租赁价格" prop="pricePerHour">
           <el-input-number v-model="updateForm.pricePerHour" :min="0" />
         </el-form-item>
         <el-form-item label="会议室状态" prop="status">
@@ -123,8 +133,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
-import { ElNotification, ElMessageBox } from "element-plus"; // 新增导入ElMessageBox
+import { computed, ref } from "vue";
+import { ElNotification, ElMessageBox, type FormInstance } from "element-plus"; // 新增导入ElMessageBox
+
 import {
   createMeetingRoom,
   deleteMeetingRoom,
@@ -136,6 +147,14 @@ import type {
   MeetingRoomCreateData,
   MeetingRoomUpdateData,
 } from "@/api/meetingRoom/index.types"; // 导入会议室相关类型定义
+
+import {
+  statusMap,
+  statusColorMap,
+  roomTypeMap,
+  statusMapReverse,
+  roomTypeMapReverse,
+} from "@/types/meetingRoom";
 
 // 响应式数据
 const meetingRooms = ref<MeetingRoom[]>([]);
@@ -150,6 +169,7 @@ const createForm = ref<MeetingRoomCreateData>({
   pricePerHour: 0,
   status: "available",
 });
+const createFormRef = ref<FormInstance>();
 
 // 更新会议室表单数据模型
 const updateForm = ref<MeetingRoomUpdateData>({
@@ -160,6 +180,7 @@ const updateForm = ref<MeetingRoomUpdateData>({
   pricePerHour: 0,
   status: "available",
 });
+const updateFormRef = ref<FormInstance>();
 
 // 创建会议室表单验证规则
 const createRules = {
@@ -176,6 +197,9 @@ const createRules = {
 
 // 更新会议室表单验证规则
 const updateRules = {
+  oldRoomName: [
+    { required: true, message: "请输入会议室名称", trigger: "blur" },
+  ],
   newRoomName: [
     { required: true, message: "请输入会议室名称", trigger: "blur" },
   ],
@@ -191,8 +215,26 @@ const updateRules = {
 
 // 获取会议室列表
 const fetchMeetingRooms = async () => {
-  const response = await getMeetingRoomList();
-  meetingRooms.value = response.data;
+  try {
+    console.log("fetchMeetingRooms");
+    const response = await getMeetingRoomList();
+    if (response.code === 200) {
+      meetingRooms.value = response.data;
+    } else {
+      ElNotification({
+        title: "错误",
+        message: response.message || "获取会议室列表失败",
+        type: "error",
+      });
+    }
+  } catch (error) {
+    console.error("获取会议室列表异常:", error);
+    ElNotification({
+      title: "错误",
+      message: "网络请求异常，请检查网络连接",
+      type: "error",
+    });
+  }
 };
 
 // 打开创建会议室对话框
@@ -221,74 +263,138 @@ const openUpdateDialog = (room: MeetingRoom) => {
 };
 
 // 创建新会议室
-const createMeetingRoomHandler = async () => {
-  try {
-    await createMeetingRoom(createForm.value);
-    ElNotification({
-      title: "成功",
-      message: "会议室创建成功",
-      type: "success",
-    });
-    createDialogVisible.value = false;
-    fetchMeetingRooms();
-  } catch (error) {
-    ElNotification({
-      title: "错误",
-      message: "会议室创建失败",
-      type: "error",
-    });
-  }
+const createMeetingRoomHandler = () => {
+  if (!createFormRef.value) return;
+  createFormRef.value.validate(async (valid) => {
+    if (!valid) return;
+
+    try {
+      await createMeetingRoom(createForm.value);
+      ElNotification({
+        title: "成功",
+        message: "会议室创建成功",
+        type: "success",
+      });
+      createDialogVisible.value = false;
+      fetchMeetingRooms();
+    } catch (error) {
+      ElNotification({
+        title: "错误",
+        message: "会议室创建失败",
+        type: "error",
+      });
+    }
+  });
 };
 
 // 更新现有会议室
-const updateMeetingRoomHandler = async () => {
-  try {
-    await updateMeetingRoom(updateForm.value);
-    ElNotification({
-      title: "成功",
-      message: "会议室更新成功",
-      type: "success",
-    });
-    updateDialogVisible.value = false;
-    fetchMeetingRooms();
-  } catch (error) {
-    ElNotification({
-      title: "错误",
-      message: "会议室更新失败",
-      type: "error",
-    });
-  }
+const updateMeetingRoomHandler = () => {
+  if (!updateFormRef.value) return;
+  updateFormRef.value.validate(async (valid) => {
+    if (!valid) return;
+
+    const submitData = {
+      ...updateForm.value,
+      roomType: roomTypeMapReverse[updateForm.value.roomType] || updateForm.value.roomType,
+      status: statusMapReverse[updateForm.value.status] || updateForm.value.status
+    };
+
+    console.log(
+      "正在提交的表单数据:",
+      JSON.stringify(updateForm.value, null, 2)
+    );
+    try {
+      await updateMeetingRoom(submitData);
+      ElNotification({
+        title: "成功",
+        message: "会议室更新成功",
+        type: "success",
+      });
+      updateDialogVisible.value = false;
+      fetchMeetingRooms();
+    } catch (error) {
+      ElNotification({
+        title: "错误",
+        message: "会议室更新失败",
+        type: "error",
+      });
+    }
+  });
 };
 
 // 删除会议室
-const deleteRoom = async (roomName: string) => {
+const deleteMeetingRoomHandle = async (roomName: string) => {
+  console.log(roomName);
   try {
     await ElMessageBox.confirm(`确定要删除会议室 "${roomName}" 吗?`, "提示", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning",
     });
-    await deleteMeetingRoom(roomName);
-    ElNotification({
-      title: "成功",
-      message: "会议室删除成功",
-      type: "success",
-    });
-    fetchMeetingRooms();
-  } catch (error) {
-    if (error !== "cancel") {
-      // 如果用户点击"取消"按钮，ElMessageBox会抛出错误，错误内容为"cancel"
+  } catch {
+    // 用户取消操作，无需任何提示
+    return;
+  }
+
+  try {
+    const response = await deleteMeetingRoom(roomName);
+
+    // 判断后端返回的状态码或消息
+    if (response.code === 400) {
       ElNotification({
         title: "错误",
-        message: "会议室删除失败",
+        message: response.message,
         type: "error",
       });
+    } else {
+      ElNotification({
+        title: "成功",
+        message: "会议室删除成功",
+        type: "success",
+      });
+      fetchMeetingRooms();
     }
+  } catch (error) {
+    // 针对其他错误类型的处理
+    ElNotification({
+      title: "错误",
+      message: "会议室删除失败",
+      type: "error",
+    });
   }
 };
 
 // 初始化获取会议室列表
 fetchMeetingRooms();
+
+const mappedMeetingRooms = computed(() => {
+  return meetingRooms.value.map((room) => ({
+    ...room,
+    status: statusMap[room.status] || room.status,
+    roomType: roomTypeMap[room.roomType] || room.roomType,
+  }));
+});
+
+// 分页相关数据
+const currentPage = ref(1);
+const pageSize = ref(10);
+
+// 计算当前页显示的数据
+const pagedMeetingRooms = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return mappedMeetingRooms.value.slice(start, end);
+});
+
+// 每页条数变化
+const handleSizeChange = (val: number) => {
+  pageSize.value = val;
+};
+
+// 当前页变化
+const handleCurrentChange = (val: number) => {
+  currentPage.value = val;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -303,5 +409,10 @@ fetchMeetingRooms();
 
 .el-table {
   margin-bottom: 20px;
+}
+
+.el-pagination {
+  margin-top: 20px;
+  justify-content: flex-end;
 }
 </style>
