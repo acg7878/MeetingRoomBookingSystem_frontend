@@ -1,48 +1,46 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { unauthorized } from "@/api/auth";
 import { setupDynamicRoutes } from "@/router/permissions";
-import { usePermissionStore } from "@/store/modules/permissions";
-import { useUserStore } from "@/store/modules/user";
 
 const staticRoutes = [
   {
     path: "/",
     name: "welcome",
-    component: () => import("../views/welcome/WelcomeView.vue"),
+    component: () => import("@/views/welcome/WelcomeView.vue"),
     children: [
       {
         path: "/",
         name: "welcome-login",
-        component: () => import("../views/welcome/LoginPage.vue"),
+        component: () => import("@/views/welcome/LoginPage.vue"),
       },
       {
         path: "register",
         name: "welcome-register",
-        component: () => import("../views/welcome/RegisterPage.vue"),
+        component: () => import("@/views/welcome/RegisterPage.vue"),
       },
       {
         path: "forget",
         name: "welcome-forget",
-        component: () => import("../views/welcome/ForgetPage.vue"),
+        component: () => import("@/views/welcome/ForgetPage.vue"),
       },
     ],
   },
   {
     path: "/index",
     name: "index",
-    component: () => import("@/layout/AppLayout.vue"),
+    component: () => import("@/views/layout/AppLayout.vue"),
     children: [
       {
         path: "", // 默认子路由，进入 /index 时显示
         name: "index-welcome",
-        component: () => import("@/layout/Welcome.vue"),
+        component: () => import("@/views/layout/Welcome.vue"),
       },
     ],
   },
   {
     path: "/403",
     name: "403",
-    component: () => import("../views/error/403.vue"),
+    component: () => import("@/views/error/403.vue"),
     meta: { title: "403 禁止访问" },
   },
   {

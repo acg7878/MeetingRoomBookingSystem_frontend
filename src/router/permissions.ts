@@ -1,6 +1,6 @@
 // src/router/permissions.ts:
-import { usePermissionStore } from "@/store/modules/permissions";
-import { useUserStore } from "@/store/modules/user";
+import { usePermissionStore } from "@/stores/modules/permissions";
+import { useUserStore } from "@/stores/modules/authStore";
 
 export function setupDynamicRoutes(router,dynamicRoutes) {
   router.beforeEach(async (to, from, next) => {
