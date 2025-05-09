@@ -1,6 +1,6 @@
 <template>
-  <el-header class="fade-in">
-    <div class="header-content">
+ 
+    <div class="header">
       <h1>会议室预订系统</h1>
       <div class="right-content">
         <el-dropdown @command="handleCommand">
@@ -19,7 +19,7 @@
       </div>
     </div>
     <!-- 删除通知对话框 -->
-  </el-header>
+
 </template>
 
 <script setup lang="ts">
@@ -73,11 +73,15 @@ const handleCommand = (command: string) => {
   }
 }
 
-.header-content {
+.header {
+  animation: fadeIn 0.5s ease-in-out;
+  /* background-color: #f5f5f5; */
+  border-bottom: 1px solid #e0e0e0; /* 添加底部边框增强区分度 */
   display: flex;
   justify-content: space-between; 
   align-items: center;
   height: 100%;
+  width: 100%;
   padding: 0 20px;
   box-sizing: border-box; 
 }
