@@ -1,7 +1,7 @@
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
 import router from "../../router";
-import { usePermissionStore } from "@/store/permissions";
+import { useUserStore } from "@/store/modules/user";
 
 const authItemName = "authorize";
 // 设置后端基础地址
@@ -127,19 +127,32 @@ const login = (
   username: string,
   password: string,
   remember: boolean,
-  success: (data: { username: string; token: string; expire: string;}) => void,
+  success: (data: {
+    username: string;
+    token: string;
+    expire: string;
+    role: string;
+  }) => void,
   failure: (
     message: string,
     code?: number,
     url?: string
   ) => void = defaultFailure
 ): void => {
-  internalPost<{ username: string; token: string; expire: string }>(
+  internalPost<{
+    username: string;
+    token: string;
+    expire: string;
+    role: string;
+  }>(
     "/api/auth/login",
     { username, password },
     { "Content-Type": "application/x-www-form-urlencoded" },
     (data) => {
       storeAccessToken(remember, data.token, data.expire);
+      const userStore = useUserStore();
+      userStore.setRole(data.role);
+      console.log(data.role);
       ElMessage.success(`登录成功，欢迎 ${data.username}`);
       success(data);
     },
@@ -172,6 +185,8 @@ const logout = (
     "/api/auth/logout",
     () => {
       deleteAccessToken();
+      const userStore = useUserStore();
+      userStore.clearRole();
       ElMessage.success("退出登录成功");
       success();
     },
