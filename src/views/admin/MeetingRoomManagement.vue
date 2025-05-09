@@ -297,22 +297,34 @@ const openUpdateDialog = (room: MeetingRoom) => {
 // 创建新会议室
 const createMeetingRoomHandler = () => {
   if (!createFormRef.value) return;
+
   createFormRef.value.validate(async (valid) => {
     if (!valid) return;
 
     try {
-      await createMeetingRoom(createForm.value);
-      ElNotification({
-        title: "成功",
-        message: "会议室创建成功",
-        type: "success",
-      });
-      createDialogVisible.value = false;
-      fetchMeetingRooms();
+      const response = await createMeetingRoom(createForm.value); // 调用后端接口
+
+      // 检查后端返回的状态码或结果
+      if (response.code === 200) {
+        ElNotification({
+          title: "成功",
+          message: "会议室创建成功",
+          type: "success",
+        });
+        createDialogVisible.value = false;
+        fetchMeetingRooms(); // 刷新会议室列表
+      } else {
+        ElNotification({
+          title: "错误",
+          message: response.message || "会议室创建失败",
+          type: "error",
+        });
+      }
     } catch (error) {
+      // 捕获网络或其他异常
       ElNotification({
         title: "错误",
-        message: "会议室创建失败",
+        message: "网络请求失败，请稍后重试",
         type: "error",
       });
     }
@@ -331,10 +343,10 @@ const updateMeetingRoomHandler = () => {
       status: statusMapReverse[updateForm.value.status] || updateForm.value.status
     };
 
-    console.log(
-      "正在提交的表单数据:",
-      JSON.stringify(updateForm.value, null, 2)
-    );
+    // console.log(
+    //   "正在提交的表单数据:",
+    //   JSON.stringify(updateForm.value, null, 2)
+    // );
     try {
       await updateMeetingRoom(submitData);
       ElNotification({
