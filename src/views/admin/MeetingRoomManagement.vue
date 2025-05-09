@@ -33,6 +33,13 @@
             plain
             >删除</el-button
           >
+          <el-button
+            @click="openDetailDialog(scope.row)"
+            type="info"
+            size="small"
+            plain
+            >详细</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -129,7 +136,31 @@
         >
       </span>
     </el-dialog>
-  </div>
+    <!-- 修改后的详细对话框 -->
+    <el-dialog v-model="detailDialogVisible" title="会议室详情" width="40%">
+      <el-descriptions :column="1" border>
+        <el-descriptions-item label="会议室名称">{{ detailForm.roomName }}</el-descriptions-item>
+        <el-descriptions-item label="会议室类型">{{ roomTypeMap[detailForm.roomType] || detailForm.roomType }}</el-descriptions-item>
+        <el-descriptions-item label="座位数">{{ detailForm.seatCount }}</el-descriptions-item>
+        <el-descriptions-item label="价格/小时">{{ detailForm.pricePerHour }}</el-descriptions-item>
+        <el-descriptions-item label="状态">
+          <el-tag :type="statusColorMap[detailForm.status]" disable-transitions>
+            {{ statusMap[detailForm.status] || detailForm.status }}
+          </el-tag>
+        </el-descriptions-item>
+        <el-descriptions-item label="设备">
+          <el-tag
+            v-for="(equipment, index) in detailForm.equipments"
+            :key="index"
+            style="margin-right: 8px; margin-bottom: 8px"
+          >
+            {{ equipment }}
+          </el-tag>
+          <span v-if="detailForm.equipments.length === 0">暂无设备</span>
+        </el-descriptions-item>
+      </el-descriptions>
+    </el-dialog>
+</div>
 </template>
 
 <script lang="ts" setup>
@@ -139,6 +170,7 @@ import { ElNotification, ElMessageBox, type FormInstance } from "element-plus"; 
 import {
   createMeetingRoom,
   deleteMeetingRoom,
+  getMeetingRoomEquipment,
   getMeetingRoomList,
   updateMeetingRoom,
 } from "@/api/meetingRoom";
@@ -216,7 +248,7 @@ const updateRules = {
 // 获取会议室列表
 const fetchMeetingRooms = async () => {
   try {
-    console.log("fetchMeetingRooms");
+    //console.log("fetchMeetingRooms");
     const response = await getMeetingRoomList();
     if (response.code === 200) {
       meetingRooms.value = response.data;
@@ -394,6 +426,41 @@ const handleSizeChange = (val: number) => {
 // 当前页变化
 const handleCurrentChange = (val: number) => {
   currentPage.value = val;
+};
+const detailDialogVisible = ref(false);
+const loadingEquipment = ref(false);
+
+const detailForm = ref({
+  roomName: '',
+  roomType: '',
+  seatCount: 0,
+  pricePerHour: 0,
+  status: '',
+  equipments: [] as string[]
+});
+
+const openDetailDialog = async (room: MeetingRoom) => {
+  try {
+    loadingEquipment.value = true;
+    const response = await getMeetingRoomEquipment(room.roomName);
+    detailForm.value = {
+      roomName: room.roomName,
+      roomType: room.roomType,
+      seatCount: room.seatCount,
+      pricePerHour: room.pricePerHour,
+      status: room.status,
+      equipments: response.data
+    };
+    detailDialogVisible.value = true;
+  } catch (error) {
+    ElNotification({
+      title: '错误',
+      message: '获取会议室详情失败',
+      type: 'error'
+    });
+  } finally {
+    loadingEquipment.value = false;
+  }
 };
 </script>
 
