@@ -1,7 +1,10 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { unauthorized } from "@/api/auth";
+import { setupDynamicRoutes } from "@/router/permissions";
+import { usePermissionStore } from "@/store/modules/permissions";
+import { useUserStore } from "@/store/modules/user";
 
-export const staticRoutes = [
+const staticRoutes = [
   {
     path: "/",
     name: "welcome",
@@ -27,12 +30,12 @@ export const staticRoutes = [
   {
     path: "/index",
     name: "index",
-    component: () => import("../layout/AppLayout.vue"),
+    component: () => import("@/layout/AppLayout.vue"),
     children: [
       {
         path: "", // 默认子路由，进入 /index 时显示
         name: "index-welcome",
-        component: () => import("@/components/layout/Welcome.vue"),
+        component: () => import("@/layout/Welcome.vue"),
       },
     ],
   },
@@ -45,53 +48,50 @@ export const staticRoutes = [
   {
     path: "/404",
     name: "404",
-    component: () => import("../views/error/404.vue"),
+    component: () => import("@/views/error/404.vue"),
     meta: { title: "404 页面未找到" },
   },
   {
-    path: "/:pathMatch(.*)*",
-    name: "NotFound",
-    component: () => import("../views/error/404.vue"),
-    meta: { title: "404 页面未找到" },
+    path: "/500",
+    name: "500",
+    component: () => import("@/views/error/500.vue"),
+    meta: { title: "500 出错了！" },
   },
 ];
 
-export const dynamicRoutes = [
+const dynamicRoutes = [
   {
-    path: "/admin/meeting-rooms",
-    name: "MeetingRoomSetting",
-    meta: { title: "MeetingRoomSetting", roles: ["admin"] },
-    component: () => import("@/views/admin/MeetingRoomSetting.vue"),
+    path: "/index/admin/meeting-rooms",
+    name: "MeetingRoomManagement",
+    meta: { title: "会议室管理", roles: ["admin"], icon: "Lock" },
+    component: () => import("@/views/admin/MeetingRoomManagement.vue"),
   },
   {
-    path: "/admin/orders",
-    name: "AdminOrders",
-    meta: { title: "OrderManagement", roles: ["admin"] },
-    //component: () => import('@/views/admin/OrderManagement.vue')
-  },
-  {
-    path: "/admin/users",
+    path: "/index/admin/users",
     name: "AdminUsers",
-    meta: { title: "UserManagement", roles: ["admin"] },
-    //component: () => import('@/views/admin/UserManagement.vue')
+    meta: { title: "用户管理", roles: ["admin"], icon: "User" },
+    component: () => import("@/views/admin/UserManagement.vue"),
   },
 ];
+
 
 const router = createRouter({
   history: createWebHashHistory(),
   routes: staticRoutes,
 });
 
-router.beforeEach((to, from, next) => {
-  const isUnauthorized: boolean = unauthorized(); // 检查是否未登录
+setupDynamicRoutes(router, dynamicRoutes); // 动态添加路由
+router.beforeEach(async (to, from, next) => {
+  const isUnauthorized = unauthorized(); // 是否未登录
 
+  // 登录/注册页访问限制
   if (to.name?.toString().startsWith("welcome") && !isUnauthorized) {
-    next("/index");
-  } else if (to.fullPath.startsWith("/index") && isUnauthorized) {
-    next("/");
-  } else {
-    next();
+    return next("/index");
   }
+  if (to.fullPath.startsWith("/index") && isUnauthorized) {
+    return next("/");
+  }
+  next();
 });
 
 export default router;
