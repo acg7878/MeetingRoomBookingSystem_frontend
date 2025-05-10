@@ -116,10 +116,10 @@
 
 <script setup lang="ts">
 import { EditPen, Lock, Message, User } from "@element-plus/icons-vue";
-import router from "../../router";
+import router from "@/router";
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { get, post } from "../../api/auth";
+import { get, post } from "@/api/auth";
 
 // 定义表单数据类型
 interface Form {
@@ -228,7 +228,7 @@ const register = () => {
           role: form.role,
         },
         () => {
-          ElMessage.success("注册成功，欢迎使用本系统");
+          ElMessage.success("注册成功，请等待管理员审核");
           router.push("/");
         }
       );
