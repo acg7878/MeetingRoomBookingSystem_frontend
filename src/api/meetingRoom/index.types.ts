@@ -31,6 +31,13 @@ export interface MeetingRoomUpdateData {
   status: RoomStatus;
 }
 
+export interface MeetingRoomFliterData {
+  roomName: string;
+  roomType: RoomType;
+  seatCount: number;
+  pricePerHour: number;
+}
+
 export interface ResponseData<T = any> {
   code: number;
   message: string;

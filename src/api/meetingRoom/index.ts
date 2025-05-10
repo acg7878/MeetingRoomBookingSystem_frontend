@@ -4,9 +4,9 @@ import { takeAccessToken } from "@/api/auth";
 import type {
   MeetingRoom,
   MeetingRoomCreateData,
+  MeetingRoomFliterData,
   MeetingRoomUpdateData,
   ResponseData,
-
 } from "./index.types";
 
 const BASE_URL = "http://localhost:8080";
@@ -57,5 +57,21 @@ export const getMeetingRoomEquipment = (meetingRoomName: String) =>
   handleRequest<string[]>(
     axios.get(`${BASE_URL}/meeting-rooms/equipment`, {
       params: { meetingRoomName },
+    })
+  );
+
+// 根据筛选条件获取会议室列表接口
+export const getMeetingRoomByFilter = (filterCriteria: {
+  startTime: string;
+  endTime: string;
+  attendees: number;
+  equipment: string[];
+}) =>
+  handleRequest<MeetingRoomFliterData[]>(
+    axios.post("/meeting-rooms/fliter", {
+      startTime: filterCriteria.startTime,
+      endTime: filterCriteria.endTime,
+      attendees: filterCriteria.attendees,
+      equipment: filterCriteria.equipment,
     })
   );
