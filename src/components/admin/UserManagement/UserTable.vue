@@ -4,9 +4,16 @@
     <el-table-column prop="email" label="邮箱" align="center" />
     <el-table-column prop="createdAt" label="创建时间" align="center" />
     <el-table-column prop="updatedAt" label="最近更新时间" align="center" />
+    <el-table-column prop="status" label="状态" align="center">
+      <template #default="{ row }">
+        <el-tag :type="userStatusColorMap[row.status]" disable-transitions>
+          {{ userStatusMap[row.status] || row.status }}
+        </el-tag>
+      </template>
+    </el-table-column>
     <el-table-column label="操作" align="center">
-      <template #default="scope">
-        <el-button type="primary" size="small" plain>编辑</el-button>
+      <template #default="{ row }">
+        <el-button type="primary" size="small" plain @click="userStore.openEditDialog(row)">编辑</el-button>
         <el-button type="danger" size="small" plain>删除</el-button>
       </template>
     </el-table-column>
@@ -15,6 +22,6 @@
 
 <script lang="ts" setup>
 import { useUsersStore } from "@/stores/modules/userStore";
-
+import { userStatusMap, userStatusColorMap }  from "@/constants/user"
 const userStore = useUsersStore();
 </script>
