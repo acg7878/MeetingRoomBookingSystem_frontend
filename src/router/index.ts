@@ -70,8 +70,25 @@ const dynamicRoutes = [
     meta: { title: "用户管理", roles: ["admin"], icon: "User" },
     component: () => import("@/views/admin/UserManagement.vue"),
   },
+  {
+    path: "/index/customer/meetingRoomBook",
+    name: "meetingRoomBook",
+    meta: { title: "会议室预订", roles: ["customer"], icon: "Lock" },
+    component: () => import("@/views/customer/meetingRoomBook.vue"),
+  },
+  // {
+  //   path: "/index/customer/order",
+  //   name: "CustomerOrder",
+  //   meta: { title: "订单", roles: ["customer"], icon: "Lock" },
+  //   component: () => import("@/views/customer/Order.vue"),
+  // },
+  {
+    path: "/index/customer/meeting-rooms",
+    name: "MeetingRoomOperation",
+    meta: { title: "会议室运营", roles: ["employee"], icon: "Lock" },
+    component: () => import("@/views/employee/MeetingRoomOperation.vue"),
+  },
 ];
-
 
 const router = createRouter({
   history: createWebHashHistory(),
