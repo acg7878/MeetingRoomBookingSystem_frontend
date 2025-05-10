@@ -132,6 +132,7 @@ const login = (
     token: string;
     expire: string;
     role: string;
+    status: string;
   }) => void,
   failure: (
     message: string,
@@ -144,15 +145,23 @@ const login = (
     token: string;
     expire: string;
     role: string;
+    status: string;
   }>(
     "/api/auth/login",
     { username, password },
     { "Content-Type": "application/x-www-form-urlencoded" },
     (data) => {
+      if (data.status === "pending") {
+        ElMessage.warning("您的账户尚未激活，请联系管理员！");
+        return;
+      } else if (data.status === "frozen") {
+        ElMessage.warning("您的账户已被冻结，请联系管理员！");
+        return;
+      }
       storeAccessToken(remember, data.token, data.expire);
       const userStore = useUserStore();
       userStore.setRole(data.role);
-      console.log(data.role);
+      //console.log(data.role);
       ElMessage.success(`登录成功，欢迎 ${data.username}`);
       success(data);
     },
