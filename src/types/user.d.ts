@@ -3,6 +3,7 @@ export interface User {
   email: string | null;
   createdAt: string;
   updatedAt: string
+  status: string
 }
 
 export interface ResponseData<T = any> {
@@ -10,3 +11,4 @@ export interface ResponseData<T = any> {
   message: string;
   data: T;
 }
+

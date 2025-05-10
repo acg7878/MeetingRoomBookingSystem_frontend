@@ -38,3 +38,17 @@ const handleRequest = async <T>(
 // 获取用户列表
 export const getUserList = () =>
   handleRequest<User[]>(axios.get(`${BASE_URL}/user/list`));
+
+/**
+ * 更新用户状态
+ * @param username 用户名
+ * @param status 新的状态
+ * @returns Promise<ResponseData<null>>
+ */
+export const updateUserStatus = (username: string, status: string) =>
+  handleRequest<null>(
+    axios.post(`${BASE_URL}/user/update-status`, {
+      userName: username,
+      status,
+    })
+  );
