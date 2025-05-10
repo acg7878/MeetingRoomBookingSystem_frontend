@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useUsersStore } from "@/stores/modules/userStore";
+import { useUsersStore } from "@/stores/modules/admin/userStore";
 import { userStatusMap } from "@/constants/user";
 import { ElMessage } from "element-plus";
 

@@ -13,7 +13,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useUsersStore } from "@/stores/modules/userStore";
+import { useUsersStore } from "@/stores/modules/admin/userStore";
 
 const userStore = useUsersStore();
 </script>

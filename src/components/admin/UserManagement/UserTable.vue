@@ -21,7 +21,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useUsersStore } from "@/stores/modules/userStore";
+import { useUsersStore } from "@/stores/modules/admin/userStore";
 import { userStatusMap, userStatusColorMap }  from "@/constants/user"
 const userStore = useUsersStore();
 </script>

@@ -7,7 +7,7 @@
 </template>
 
 <script lang="ts" setup>
-import { useUsersStore } from "@/stores/modules/userStore";
+import { useUsersStore } from "@/stores/modules/admin/userStore";
 import UserTable from "@/components/admin/UserManagement/UserTable.vue";
 import UserPagination from "@/components/admin/UserManagement/UserPagination.vue";
 import UserEditDialog from "@/components/admin/UserManagement/UserEditDialog.vue"
