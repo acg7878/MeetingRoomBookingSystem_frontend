@@ -28,19 +28,23 @@ export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
     }
   };
   const filterMeetingRooms = async () => {
+    meetingRooms.value = [];
     isLoading.value = true;
     try {
       const response = await getMeetingRoomByFilter({
-        startTime: dayjs(filterForm.value.startTime).format(
-          "YYYY-MM-DDTHH:mm:ss"
-        ),
+        startTime: dayjs(filterForm.value.startTime).format("YYYY-MM-DDTHH:mm:ss"),
         endTime: dayjs(filterForm.value.endTime).format("YYYY-MM-DDTHH:mm:ss"),
         attendees: filterForm.value.attendees,
         equipment: filterForm.value.equipment,
       });
       console.log("后端返回的数据：", response.data); // 打印返回的数据
       if (response.code === 200) {
-        meetingRooms.value = response.data;
+        if (response.data.length === 0) {
+          // 如果返回的数据为空数组
+          ElMessage.warning("没有符合条件的会议室，请调整筛选条件！");
+        } else {
+          meetingRooms.value = response.data;
+        }
       } else {
         ElMessage.error(`筛选会议室失败：${response.message}`);
       }

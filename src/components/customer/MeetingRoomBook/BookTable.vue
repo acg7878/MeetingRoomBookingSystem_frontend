@@ -2,7 +2,11 @@
   <el-table :data="meetingRooms" border style="width: 100%">
     <el-table-column prop="roomName" label="会议室名称" align="center" />
     <el-table-column prop="seatCount" label="容纳人数" align="center" />
-    <el-table-column prop="roomType" label="类型" align="center" />
+     <el-table-column label="类型" align="center">
+      <template #default="{ row }">
+        {{ roomTypeMap[row.roomType] || "未知类型" }}
+      </template>
+    </el-table-column>
     <el-table-column prop="pricePerHour" label="每小时价格" align="center" />
     <el-table-column label="操作" align="center">
       <template #default="{ row }">
@@ -43,7 +47,7 @@ import dayjs from "dayjs";
 import type { RoomType } from "@/api/meetingRoom/index.types";
 import { takeAccessToken } from "@/api/auth";
 import { jwtDecode } from "jwt-decode";
-
+import { roomTypeMap } from "@/constants/meetingRoom"; 
 // 使用 Pinia 的 store
 const meetingRoomBookStore = useMeetingRoomBookStore();
 const { meetingRooms, filterForm } = storeToRefs(meetingRoomBookStore);
