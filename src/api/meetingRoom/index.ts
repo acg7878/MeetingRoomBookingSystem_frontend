@@ -75,3 +75,19 @@ export const getMeetingRoomByFilter = (filterCriteria: {
       equipment: filterCriteria.equipment,
     })
   );
+
+// 预订会议室
+export const bookMeetingRoom = (bookingData: {
+  meetingRoomName: string;
+  customerName: string;
+  startTime: string;
+  endTime: string;
+}) =>
+  handleRequest<void>(
+    axios.post("/meeting-rooms/book", {
+      meetingRoomName: bookingData.meetingRoomName,
+      customerName: bookingData.customerName,
+      startTime: bookingData.startTime,
+      endTime: bookingData.endTime,
+    })
+  );

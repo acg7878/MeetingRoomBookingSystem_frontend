@@ -1,6 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { unauthorized } from "@/api/auth";
-import { setupDynamicRoutes } from "@/router/permissions";
 
 const staticRoutes = [
   {
@@ -57,7 +56,7 @@ const staticRoutes = [
   },
 ];
 
-const dynamicRoutes = [
+export const dynamicRoutes = [
   {
     path: "/index/admin/meeting-rooms",
     name: "MeetingRoomManagement",
@@ -95,7 +94,7 @@ const router = createRouter({
   routes: staticRoutes,
 });
 
-setupDynamicRoutes(router, dynamicRoutes); // 动态添加路由
+//setupDynamicRoutes(router, dynamicRoutes); // 动态添加路由
 router.beforeEach(async (to, from, next) => {
   const isUnauthorized = unauthorized(); // 是否未登录
 

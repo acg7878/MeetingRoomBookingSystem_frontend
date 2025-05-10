@@ -1,7 +1,9 @@
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
-import router from "../../router";
+import router, { dynamicRoutes } from "../../router";
 import { useUserStore } from "@/stores/modules/authStore";
+
+import { usePermissionStore } from "@/stores/modules/permissionStore";
 
 const authItemName = "authorize";
 // 设置后端基础地址
@@ -161,7 +163,8 @@ const login = (
       storeAccessToken(remember, data.token, data.expire);
       const userStore = useUserStore();
       userStore.setRole(data.role);
-      //console.log(data.role);
+      const permissionStore = usePermissionStore();
+      permissionStore.initializeDynamicRoutes(router, dynamicRoutes);
       ElMessage.success(`登录成功，欢迎 ${data.username}`);
       success(data);
     },
@@ -196,6 +199,8 @@ const logout = (
       deleteAccessToken();
       const userStore = useUserStore();
       userStore.clearRole();
+      const permissionStore = usePermissionStore();
+      permissionStore.resetAuthRoutes();
       ElMessage.success("退出登录成功");
       success();
     },

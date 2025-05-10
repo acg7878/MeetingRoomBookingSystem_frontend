@@ -17,6 +17,8 @@
 <script setup lang="ts">
 import Header from '@/views/layout/AppHeader.vue';
 import Sidebar from '@/views/layout/AppSidebar.vue';
+
+//location.reload();
 </script>
 
 <style lang="scss" scoped>

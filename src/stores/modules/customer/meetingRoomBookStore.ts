@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { getEquipmentList } from "@/api/equipment";
 import type { MeetingRoomFliterData } from "@/api/meetingRoom/index.types";
-import { getMeetingRoomByFilter } from "@/api/meetingRoom";
+import { bookMeetingRoom, getMeetingRoomByFilter } from "@/api/meetingRoom";
 import { ElMessage } from "element-plus";
 import dayjs from "dayjs";
 export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
@@ -31,7 +31,9 @@ export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
     isLoading.value = true;
     try {
       const response = await getMeetingRoomByFilter({
-        startTime: dayjs(filterForm.value.startTime).format("YYYY-MM-DDTHH:mm:ss"),
+        startTime: dayjs(filterForm.value.startTime).format(
+          "YYYY-MM-DDTHH:mm:ss"
+        ),
         endTime: dayjs(filterForm.value.endTime).format("YYYY-MM-DDTHH:mm:ss"),
         attendees: filterForm.value.attendees,
         equipment: filterForm.value.equipment,
@@ -50,6 +52,27 @@ export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
     }
   };
 
+  const bookMeetingRoomAction = async (bookingData: {
+    meetingRoomName: string;
+    customerName: string;
+    startTime: string;
+    endTime: string;
+  }) => {
+    try {
+      const response = await bookMeetingRoom(bookingData);
+
+      // 检查后端返回的 code
+      if (response.code === 200) {
+        ElMessage.success(response.message || "预订成功！");
+      } else {
+        ElMessage.error(response.message || "预订失败！");
+      }
+    } catch (error) {
+      console.error("预订失败：", error);
+      ElMessage.error("预订失败，请稍后重试！");
+    }
+  };
+
   return {
     filterForm,
     meetingRooms,
@@ -57,5 +80,6 @@ export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
     isLoading,
     fetchEquipmentList,
     filterMeetingRooms,
+    bookMeetingRoomAction,
   };
 });

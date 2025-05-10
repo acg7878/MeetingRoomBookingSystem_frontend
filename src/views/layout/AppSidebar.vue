@@ -33,7 +33,7 @@
 
 
 <script setup>
-import { usePermissionStore } from "@/stores/modules/permissions";
+import { usePermissionStore } from "@/stores/modules/permissionStore";
 import { computed } from "vue";
 
 const permissionStore = usePermissionStore();
