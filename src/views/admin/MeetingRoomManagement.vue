@@ -186,7 +186,7 @@ import {
   roomTypeMap,
   statusMapReverse,
   roomTypeMapReverse,
-} from "@/types/meetingRoom";
+} from "@/constants/meetingRoom";
 
 // 响应式数据
 const meetingRooms = ref<MeetingRoom[]>([]);
