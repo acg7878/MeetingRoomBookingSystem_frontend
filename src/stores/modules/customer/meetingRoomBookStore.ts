@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { getEquipmentList } from "@/api/equipment";
-import type { MeetingRoomFliterData } from "@/api/meetingRoom/index.types";
-import { bookMeetingRoom, getMeetingRoomByFilter } from "@/api/meetingRoom";
+import type { MeetingRoomFliterData } from "@/api/meetingRoom_old/index.types";
+import { bookMeetingRoom, getMeetingRoomByFilter } from "@/api/meetingRoom_old";
 import { ElMessage } from "element-plus";
 export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
   // 筛选条件
