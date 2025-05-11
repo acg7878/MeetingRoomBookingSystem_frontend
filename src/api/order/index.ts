@@ -1,5 +1,5 @@
 import axios from "axios";
-import type { ResponseData } from "@/api/meetingRoom/index.types";
+import type { ResponseData } from "@/api/meetingRoom_old/index.types";
 import type { Order } from "@/types/order";
 
 // 通用请求处理函数
