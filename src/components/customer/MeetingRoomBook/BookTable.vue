@@ -44,7 +44,7 @@ import { useMeetingRoomBookStore } from "@/stores/modules/customer/meetingRoomBo
 import { storeToRefs } from "pinia";
 import { ElMessage } from "element-plus";
 import dayjs from "dayjs";
-import type { RoomType } from "@/api/meetingRoom/index.types";
+import type { RoomType } from "@/api/meetingRoom_old/index.types";
 import { takeAccessToken } from "@/api/auth";
 import { jwtDecode } from "jwt-decode";
 import { roomTypeMap } from "@/constants/meetingRoom"; 

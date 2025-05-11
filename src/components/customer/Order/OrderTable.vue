@@ -3,22 +3,22 @@
     <el-table-column prop="meetingRoomName" label="会议室名称" align="center" />
     <el-table-column label="订单创建时间" align="center">
       <template #default="{ row }">
-        {{ row.createTime }}
+        {{ formatTimestamp(row.createTime) }}
       </template>
     </el-table-column>
     <el-table-column label="订单更新时间" align="center">
       <template #default="{ row }">
-        {{ row.updateTime }}
+        {{ formatTimestamp(row.updateTime) }}
       </template>
     </el-table-column>
     <el-table-column label="开始时间" align="center">
       <template #default="{ row }">
-        {{ row.startTime }}
+        {{ formatTimestamp(row.startTime) }}
       </template>
     </el-table-column>
     <el-table-column label="结束时间" align="center">
       <template #default="{ row }">
-        {{ row.endTime }}
+        {{ formatTimestamp(row.endTime) }}
       </template>
     </el-table-column>
     <el-table-column prop="totalPrice" label="总价格" align="center" />
@@ -65,6 +65,7 @@ import { useOrderStore } from "@/stores/modules/customer/orderStore";
 import { STATUS_MAP, STATUS_TAG_TYPE } from "@/constants/order"; // 引入状态映射常量
 import { computed } from "vue";
 import { ElMessageBox } from "element-plus";
+import { formatTimestamp } from "@/utils/time"; // 引入时间格式化工具函数
 
 const orderStore = useOrderStore();
 const orders = computed(() => orderStore.orders); // 从 Store 获取订单数据
