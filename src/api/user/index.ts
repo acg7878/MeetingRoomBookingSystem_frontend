@@ -2,6 +2,7 @@ import axios from "axios";
 import { takeAccessToken } from "@/api/auth";
 
 import type { User, ResponseData } from "@/types/user";
+import { jwtDecode } from "jwt-decode";
 
 const BASE_URL = "http://localhost:8080";
 
@@ -52,3 +53,35 @@ export const updateUserStatus = (username: string, status: string) =>
       status,
     })
   );
+
+export const getUserName = (): string | null => {
+  try {
+    const token = takeAccessToken(); // 获取存储的 token
+    if (!token) {
+      console.error("Token 不存在");
+      return null;
+    }
+    // 使用 jwtDecode 解析 token
+    const decoded: { username?: string } = jwtDecode(token);
+    return decoded.username || null; // 返回解析出的用户名
+  } catch (error) {
+    console.error("解析用户名失败：", error);
+    return null;
+  }
+};
+
+// export const getUserRole = (): string | null => {
+//   try {
+//     const token = takeAccessToken(); // 获取存储的 token
+//     if (!token) {
+//       console.error("Token 不存在");
+//       return null;
+//     }
+//     // 使用 jwtDecode 解析 token
+//     const decoded: { role?: string } = jwtDecode(token);
+//     return decoded.role || null; // 返回解析出的角色，若不存在则返回 null
+//   } catch (error) {
+//     console.error("解析用户角色失败：", error);
+//     return null; // 解析失败返回 null
+//   }
+// };

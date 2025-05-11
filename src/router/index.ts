@@ -1,5 +1,6 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import { unauthorized } from "@/api/auth";
+import { useUserStore } from "@/stores/modules/authStore";
 
 const staticRoutes = [
   {
@@ -54,6 +55,11 @@ const staticRoutes = [
     component: () => import("@/views/error/500.vue"),
     meta: { title: "500 出错了！" },
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    redirect: "/404", 
+  },
 ];
 
 export const dynamicRoutes = [
@@ -72,19 +78,19 @@ export const dynamicRoutes = [
   {
     path: "/index/customer/meetingRoomBook",
     name: "meetingRoomBook",
-    meta: { title: "会议室预订", roles: ["customer"], icon: "Lock" },
+    meta: { title: "会议室预订", roles: ["customer"], icon: "Clock" },
     component: () => import("@/views/customer/meetingRoomBook.vue"),
   },
-  // {
-  //   path: "/index/customer/order",
-  //   name: "CustomerOrder",
-  //   meta: { title: "订单", roles: ["customer"], icon: "Lock" },
-  //   component: () => import("@/views/customer/Order.vue"),
-  // },
   {
-    path: "/index/customer/meeting-rooms",
+    path: "/index/customer/order",
+    name: "CustomerOrder",
+    meta: { title: "订单", roles: ["customer"], icon: "ShoppingTrolley" },
+    component: () => import("@/views/customer/order.vue"),
+  },
+  {
+    path: "/index/employee/meeting-rooms",
     name: "MeetingRoomOperation",
-    meta: { title: "会议室运营", roles: ["employee"], icon: "Lock" },
+    meta: { title: "会议室运营", roles: ["employee"], icon: "InfoFilled" },
     component: () => import("@/views/employee/MeetingRoomOperation.vue"),
   },
 ];
@@ -105,6 +111,14 @@ router.beforeEach(async (to, from, next) => {
   if (to.fullPath.startsWith("/index") && isUnauthorized) {
     return next("/");
   }
+
+  if (to.meta?.roles) {
+    const userStore = useUserStore();
+    if (!to.meta.roles.includes(userStore.role)) {
+      return next("/500"); // 跳转到 500 页面
+    }
+  }
+
   next();
 });
 

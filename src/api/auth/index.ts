@@ -1,6 +1,6 @@
 import axios, { AxiosError, type AxiosResponse } from "axios";
 import { ElMessage } from "element-plus";
-import router, { dynamicRoutes } from "../../router";
+import router, { dynamicRoutes } from "@/router";
 import { useUserStore } from "@/stores/modules/authStore";
 
 import { usePermissionStore } from "@/stores/modules/permissionStore";

@@ -38,7 +38,7 @@
       </el-select>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="onFilter" >筛选</el-button>
+      <el-button type="primary" @click="onFilter">筛选</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -61,7 +61,21 @@ const filterFormRef = ref();
 
 // 表单验证规则
 const rules = {
-  startTime: [{ required: true, message: "请选择开始时间", trigger: "change" }],
+  startTime: [
+    { required: true, message: "请选择开始时间", trigger: "change" },
+    {
+      validator: (rule, value) => {
+        if (!value) {
+          return new Error("请选择开始时间");
+        }
+        if (new Date(value) <= new Date()) {
+          return new Error("开始时间必须晚于当前时间");
+        }
+        return true;
+      },
+      trigger: "change",
+    },
+  ],
   endTime: [
     { required: true, message: "请选择结束时间", trigger: "change" },
     {
