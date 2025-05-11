@@ -173,12 +173,12 @@ import {
   getMeetingRoomEquipment,
   getMeetingRoomList,
   updateMeetingRoom,
-} from "@/api/meetingRoom";
+} from "@/api/meetingRoom_old";
 import type {
   MeetingRoom,
   MeetingRoomCreateData,
   MeetingRoomUpdateData,
-} from "@/api/meetingRoom/index.types"; // 导入会议室相关类型定义
+} from "@/api/meetingRoom_old/index.types"; // 导入会议室相关类型定义
 
 import {
   statusMap,
