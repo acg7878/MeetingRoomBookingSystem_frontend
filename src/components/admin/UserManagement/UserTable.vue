@@ -2,8 +2,16 @@
   <el-table :data="userStore.users" border style="width: 100%">
     <el-table-column prop="username" label="用户名" align="center" />
     <el-table-column prop="email" label="邮箱" align="center" />
-    <el-table-column prop="createdAt" label="创建时间" align="center" />
-    <el-table-column prop="updatedAt" label="最近更新时间" align="center" />
+    <el-table-column label="创建时间" align="center">
+      <template #default="{ row }">
+        {{ formatTimestamp(row.createdAt) }}
+      </template>
+    </el-table-column>
+    <el-table-column label="最近更新时间" align="center">
+      <template #default="{ row }">
+        {{ formatTimestamp(row.updatedAt) }}
+      </template>
+    </el-table-column>
     <el-table-column prop="status" label="状态" align="center">
       <template #default="{ row }">
         <el-tag :type="userStatusColorMap[row.status]" disable-transitions>
@@ -22,6 +30,8 @@
 
 <script lang="ts" setup>
 import { useUsersStore } from "@/stores/modules/admin/userStore";
-import { userStatusMap, userStatusColorMap }  from "@/constants/user"
+import { userStatusMap, userStatusColorMap } from "@/constants/user";
+import { formatTimestamp } from "@/utils/time"; // 引入时间格式化工具函数
+
 const userStore = useUsersStore();
 </script>

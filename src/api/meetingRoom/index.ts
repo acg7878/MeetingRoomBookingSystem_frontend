@@ -62,8 +62,8 @@ export const getMeetingRoomEquipment = (meetingRoomName: String) =>
 
 // 根据筛选条件获取会议室列表接口
 export const getMeetingRoomByFilter = (filterCriteria: {
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
   attendees: number;
   equipment: string[];
 }) =>

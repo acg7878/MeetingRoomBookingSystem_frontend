@@ -12,10 +12,10 @@
         <el-input v-model="userStore.selectedUser.email" disabled />
       </el-form-item>
       <el-form-item label="创建时间">
-        <el-input v-model="userStore.selectedUser.createdAt" disabled />
+        <el-input :value="formatTimestamp(userStore.selectedUser.createdAt)" disabled />
       </el-form-item>
       <el-form-item label="最近更新时间">
-        <el-input v-model="userStore.selectedUser.updatedAt" disabled />
+        <el-input :value="formatTimestamp(userStore.selectedUser.updatedAt)" disabled />
       </el-form-item>
       <el-form-item label="状态">
         <el-select v-model="userStore.selectedUser.status" placeholder="请选择状态">
@@ -38,6 +38,7 @@
 <script lang="ts" setup>
 import { useUsersStore } from "@/stores/modules/admin/userStore";
 import { userStatusMap } from "@/constants/user";
+import { formatTimestamp } from "@/utils/time"; 
 import { ElMessage } from "element-plus";
 
 const userStore = useUsersStore();

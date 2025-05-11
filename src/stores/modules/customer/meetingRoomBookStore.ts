@@ -4,12 +4,11 @@ import { getEquipmentList } from "@/api/equipment";
 import type { MeetingRoomFliterData } from "@/api/meetingRoom/index.types";
 import { bookMeetingRoom, getMeetingRoomByFilter } from "@/api/meetingRoom";
 import { ElMessage } from "element-plus";
-import dayjs from "dayjs";
 export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
   // 筛选条件
   const filterForm = ref({
-    startTime: "", // 开始时间
-    endTime: "", // 结束时间
+    startTime: 0, // 开始时间
+    endTime: 0, // 结束时间
     attendees: 1, // 参会人数
     equipment: [], // 所需设备
   });
@@ -32,8 +31,8 @@ export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
     isLoading.value = true;
     try {
       const response = await getMeetingRoomByFilter({
-        startTime: dayjs(filterForm.value.startTime).format("YYYY-MM-DDTHH:mm:ss"),
-        endTime: dayjs(filterForm.value.endTime).format("YYYY-MM-DDTHH:mm:ss"),
+        startTime: filterForm.value.startTime,
+        endTime: filterForm.value.endTime,
         attendees: filterForm.value.attendees,
         equipment: filterForm.value.equipment,
       });

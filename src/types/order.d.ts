@@ -1,9 +1,10 @@
 export interface Order {
   orderId: number
   meetingRoomName: string;
-  startTime: string;
-  endTime: string;
-  createTime: string
+  startTime: number;
+  endTime: number;
+  createTime: number
+  updateTime: number
   totalPrice: number;
   paymentStatus: "unpaid" | "paid" | "cancelled";
 }

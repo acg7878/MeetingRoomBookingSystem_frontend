@@ -38,3 +38,8 @@ export const payMyOrder = (orderId: number) =>
   handleRequest<void>(
     axios.get("/order/pay", { params: { orderId } }) // 使用 GET 方法传递订单 ID
   );
+
+export const getAllOrders = () =>
+  handleRequest<Order[]>(
+    axios.get("/order/all-orders")
+  );

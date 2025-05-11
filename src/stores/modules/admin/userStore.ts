@@ -2,7 +2,6 @@ import { computed, ref } from "vue";
 import { getUserList, updateUserStatus } from "@/api/user";
 import type { User } from "@/types/user";
 import { defineStore } from "pinia";
-import dayjs from "dayjs";
 import { ElMessage } from "element-plus";
 
 export const useUsersStore = defineStore("users", () => {
@@ -10,9 +9,9 @@ export const useUsersStore = defineStore("users", () => {
   const isEditDialogVisible = ref(false);
   const selectedUser = ref<User>({
     username: "",
-    email: "",
-    createdAt: "",
-    updatedAt: "",
+    email: null,
+    createdAt: 0,
+    updatedAt: 0,
     status: "",
   }); // 当前选中的用户
   const currentPage = ref(1); // 当前页码
@@ -23,23 +22,21 @@ export const useUsersStore = defineStore("users", () => {
       const response = await getUserList();
       if (response.code === 200) {
         users.value = response.data.map((user: User) => ({
-          username: user.username,
-          email: user.email,
-          createdAt: dayjs(user.createdAt).format("YYYY-MM-DD HH:mm:ss"), // 格式化创建时间
-          updatedAt: dayjs(user.updatedAt).format("YYYY-MM-DD HH:mm:ss"), // 格式化更新时间
-          status: user.status,
+          ...user,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt,
         }));
       } else {
-        console.error("获取用户列表失败：", response.message);
+        ElMessage.error(`获取用户列表失败：${response.message}`);
       }
     } catch (error) {
       console.error("获取用户列表失败：", error);
+      ElMessage.error("获取用户列表失败，请稍后重试！");
     }
   };
 
   const updateUserStatusInStore = async (username: string, status: string) => {
     try {
-      console.log(username,status)
       const response = await updateUserStatus(username, status); // 调用接口
       if (response.code === 200) {
         // 更新本地用户状态
@@ -84,9 +81,9 @@ export const useUsersStore = defineStore("users", () => {
     isEditDialogVisible.value = false; // 隐藏对话框
     selectedUser.value = {
       username: "",
-      email: "",
-      createdAt: "",
-      updatedAt: "",
+      email: null,
+      createdAt: 0,
+      updatedAt: 0,
       status: "",
     }; // 清空选中的用户
   };

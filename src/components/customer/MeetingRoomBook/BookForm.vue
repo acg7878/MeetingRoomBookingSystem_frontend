@@ -11,6 +11,7 @@
         v-model="filterForm.startTime"
         type="datetime"
         placeholder="开始时间"
+        value-format="x"
       />
     </el-form-item>
     <el-form-item label="结束时间" prop="endTime">
@@ -18,6 +19,7 @@
         v-model="filterForm.endTime"
         type="datetime"
         placeholder="结束时间"
+        value-format="x"
       />
     </el-form-item>
     <el-form-item label="参会人数" prop="attendees">

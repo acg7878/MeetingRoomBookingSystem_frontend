@@ -8,7 +8,7 @@ import { useOrderStore } from "@/stores/modules/customer/orderStore";
 import { onMounted } from "vue";
 const orderStore = useOrderStore();
 
-onMounted(()=>{
-    orderStore.getMyOrderList();
-})
+onMounted(() => {
+  orderStore.getMyOrderList();
+});
 </script>

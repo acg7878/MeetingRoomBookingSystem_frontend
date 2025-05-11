@@ -30,7 +30,7 @@ const defaultFailure = (
   url?: string
 ): void => {
   console.warn(`请求地址: ${url}, 状态码: ${status}, 错误信息: ${message}`);
-  ElMessage.warning(message);
+  ElMessage.error(message);
 };
 
 const takeAccessToken = (): string | null => {
@@ -87,7 +87,7 @@ const internalPost = <T>(
         if (data.code === 200) {
           success(data.data);
         } else if (data.code === 401) {
-          failure("登录状态已过期，请重新登录！");
+          failure("账号或密码错误！");
           deleteAccessToken(true);
         } else {
           failure(data.message, data.code, url);
@@ -115,7 +115,7 @@ const internalGet = <T>(
         if (data.code === 200) {
           success(data.data);
         } else if (data.code === 401) {
-          failure("登录状态已过期，请重新登录！");
+          failure("账号或密码错误！");
           deleteAccessToken(true);
         } else {
           failure(data.message, data.code, url);
