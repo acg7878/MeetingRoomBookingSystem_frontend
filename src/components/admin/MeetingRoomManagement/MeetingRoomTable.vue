@@ -1,14 +1,16 @@
 <template>
   <div>
     <!-- 新增会议室按钮 -->
-    <el-button type="primary" @click="openCreateDialog" class="mb-4 add-margin">新增会议室</el-button>
-    <el-table :data="meetingRooms" border style="width: 100%" >
+    <el-button type="primary" @click="openCreateDialog" class="mb-4 add-margin"
+      >新增会议室</el-button
+    >
+    <el-table :data="meetingRooms" border style="width: 100%">
       <!-- 会议室名称 -->
       <el-table-column prop="roomName" label="会议室名称" align="center" />
       <!-- 会议室类型 -->
       <el-table-column prop="roomType" label="会议室类型" align="center">
-        <template #default="{row}">
-            {{ roomTypeMap[row.roomType] }}
+        <template #default="{ row }">
+          {{ roomTypeMap[row.roomType] }}
         </template>
       </el-table-column>
       <!-- 座位数 -->
@@ -27,9 +29,21 @@
       <!-- 操作 -->
       <el-table-column label="操作" align="center">
         <template #default="{ row }">
-          <el-button type="primary" size="small" plain>修改</el-button>
+          <el-button
+            type="primary"
+            size="small"
+            plain
+            @click="openEditDialog(row)"
+            >修改</el-button
+          >
           <el-button type="danger" size="small" plain>删除</el-button>
-          <el-button type="info" size="small" plain>详细</el-button>
+          <el-button
+            type="info"
+            size="small"
+            plain
+            @click="openDetailDialog(row)"
+            >详细</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -39,25 +53,46 @@
 <script lang="ts" setup>
 import { useMeetingRoomStore } from "@/stores/modules/admin/meetingRoomStore";
 import { computed, onMounted } from "vue";
-import { statusMap, statusColorMap, roomTypeMap } from "@/constants/meetingRoom"; // 状态映射
+import {
+  statusMap,
+  statusColorMap,
+  roomTypeMap,
+} from "@/constants/meetingRoom"; // 状态映射
+import type { meetingRoom } from "@/types/meetingRoom";
 
 const meetingRoomStore = useMeetingRoomStore();
 const meetingRooms = computed(() => meetingRoomStore.meetingRooms); // 获取会议室数据
 
-
 // 方法
 const openCreateDialog = () => {
-    meetingRoomStore.createDialogVisible = true
-}
+  meetingRoomStore.createDialogVisible = true;
+  meetingRoomStore.resetCreateForm();
+};
+
+const openEditDialog = (row: meetingRoom) => {
+  meetingRoomStore.editDialogVisible = true;
+  meetingRoomStore.resetEditForm();
+  //console.log(row);
+  meetingRoomStore.setEditForm(row);
+};
+
+const openDetailDialog = (row: meetingRoom) => {
+  meetingRoomStore.detailForm = {
+    ...row,
+    equipments: row.equipments ?? [], // 如果 row.equipments 是 undefined，则赋值为空数组
+  }; // 将当前行数据赋值给 detailForm
+  meetingRoomStore.detailDialogVisible = true; // 显示详情对话框
+};
 
 onMounted(() => {
   meetingRoomStore.fetchMeetingRooms(); // 初始化获取会议室列表
+  meetingRoomStore.fetchEquipments();
 });
 </script>
 
 <style lang="scss" scoped>
 .add-margin {
   margin-bottom: 20px; /* 下方增加 20px 间距 */
-  margin-top: 10px;    /* 上方增加 10px 间距（可选） */
+  margin-top: 10px; /* 上方增加 10px 间距（可选） */
 }
 </style>

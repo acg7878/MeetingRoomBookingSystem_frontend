@@ -4,8 +4,8 @@ import type {
 } from "@/types/meetingRoom";
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import { getMeetingRoomList } from "@/api/meetingRoom_new"; // 引入获取会议室列表的接口
-import { updateMeetingRoomStatus as apiUpdateMeetingRoomStatus } from "@/api/meetingRoom_new";
+import { getMeetingRoomList } from "@/api/meetingRoom"; // 引入获取会议室列表的接口
+import { updateMeetingRoomStatus as apiUpdateMeetingRoomStatus } from "@/api/meetingRoom";
 import { ElMessage } from "element-plus";
 
 export const useMeetingRoomStore = defineStore("employee_Room", () => {
