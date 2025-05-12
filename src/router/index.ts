@@ -58,7 +58,7 @@ const staticRoutes = [
   {
     path: "/:pathMatch(.*)*",
     name: "NotFound",
-    redirect: "/404", 
+    redirect: "/404",
   },
 ];
 
@@ -92,6 +92,12 @@ export const dynamicRoutes = [
     name: "MeetingRoomOperation",
     meta: { title: "会议室运营", roles: ["employee"], icon: "InfoFilled" },
     component: () => import("@/views/employee/MeetingRoomOperation.vue"),
+  },
+  {
+    path: "/index/employee/order-management",
+    name: "OrderManagement",
+    meta: { title: "订单管理", roles: ["employee"], icon: "ShoppingTrolley" },
+    component: () => import("@/views/employee/OrderManagement.vue"),
   },
 ];
 

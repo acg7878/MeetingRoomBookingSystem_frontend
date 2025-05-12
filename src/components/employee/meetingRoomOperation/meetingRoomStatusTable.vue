@@ -45,7 +45,7 @@
 import { useMeetingRoomStore } from "@/stores/modules/employee/meetingRoomStore";
 import { computed, onMounted } from "vue";
 import { statusMap, statusColorMap } from "@/constants/meetingRoom";
-import meetingRoomStatusDialog from "@/components/employee/meetingRoomStatusDialog.vue";
+import meetingRoomStatusDialog from "@/components/employee/meetingRoomOperation/meetingRoomStatusDialog.vue";
 
 // 使用 store
 const meetingRoomStore = useMeetingRoomStore();

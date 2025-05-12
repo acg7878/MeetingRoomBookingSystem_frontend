@@ -1,6 +1,15 @@
 import axios from "axios";
 import type { ResponseData } from "@/api/meetingRoom_old/index.types";
 import type { Order } from "@/types/order";
+import { takeAccessToken } from "@/api/auth";
+
+axios.interceptors.request.use((config) => {
+  const token = takeAccessToken();
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 // 通用请求处理函数
 const handleRequest = async <T>(

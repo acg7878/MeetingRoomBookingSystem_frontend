@@ -5,5 +5,5 @@
 </template>
 
 <script lang="ts" setup>
-import meetingRoomStatusTable from "@/components/employee/meetingRoomStatusTable.vue";
+import meetingRoomStatusTable from "@/components/employee/meetingRoomOperation/meetingRoomStatusTable.vue";
 </script>

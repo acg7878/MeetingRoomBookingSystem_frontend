@@ -39,14 +39,20 @@
         >
           支付
         </el-button>
-        <el-button
-          v-if="row.paymentStatus === 'unpaid' || row.paymentStatus === 'paid'"
-          type="danger"
-          size="small"
-          @click="onCancelOrder(row.orderId)"
+        <el-tooltip
+          v-if="row.paymentStatus === 'paid'"
+          :content="isCancelDisabled(row) ? '已经开始，无法取消' : ''"
+          placement="top"
         >
-          取消
-        </el-button>
+          <el-button
+            type="danger"
+            size="small"
+            :disabled="isCancelDisabled(row)"
+            @click="onCancelOrder(row.orderId)"
+          >
+            取消
+          </el-button>
+        </el-tooltip>
         <el-button
           v-if="row.paymentStatus === 'cancelled'"
           type="warning"
@@ -86,6 +92,12 @@ const onPayOrder = async (orderId: number) => {
   } catch (error) {
     console.log("支付操作被用户中止或发生错误：", error);
   }
+};
+
+// 判断是否禁用取消按钮
+const isCancelDisabled = (row: { startTime: number }): boolean => {
+  const now = Date.now();
+  return now >= row.startTime; // 如果当前时间大于等于开始时间，则禁用按钮
 };
 
 // 取消订单
