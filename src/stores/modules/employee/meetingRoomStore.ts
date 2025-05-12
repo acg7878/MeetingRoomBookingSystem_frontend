@@ -1,7 +1,6 @@
 import type {
   meetingRoom,
   meetingRoomShow,
-  meetingRoomStatus,
 } from "@/types/meetingRoom";
 import { defineStore } from "pinia";
 import { ref } from "vue";
@@ -19,7 +18,7 @@ export const useMeetingRoomStore = defineStore("employee_Room", () => {
   const selectedRoomStatus = ref(""); // 当前选中的会议室状态
 
   // 打开对话框
-  const openDialog = (roomName: string, roomStatus: meetingRoomStatus) => {
+  const openDialog = (roomName: string, roomStatus: string) => {
     selectedRoomName.value = roomName;
     selectedRoomStatus.value = roomStatus;
     dialogVisible.value = true;
@@ -71,7 +70,7 @@ export const useMeetingRoomStore = defineStore("employee_Room", () => {
           (room) => room.meetingRoomName === meetingRoomName
         );
         if (room) {
-          room.status = newStatus as meetingRoomStatus; // 类型断言为 meetingRoomStatus
+          room.status = newStatus ; 
         }
 
         ElMessage.success("状态修改成功！");
