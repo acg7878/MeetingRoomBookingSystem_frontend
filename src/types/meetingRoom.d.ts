@@ -6,16 +6,10 @@ export interface meetingRoomShow {
 export interface meetingRoom{
     roomName: string
     pricePerHour: number
-    setCount: number
+    seatCount: number
     status: meetingRoomStatus
-
+    roomType: "classroom" | "round_table";
+    equipments: string[]
 }
 
 
-export enum meetingRoomStatus {
-    AVAILABLE = "available",
-    LOCKED = "locked",
-    BOOKED = "booked",
-    IN_USE = "in_use",
-    UNDER_MAINTENANCE = "under_maintenance"
-}

@@ -12,23 +12,21 @@ export const roomTypeMap = {
 };
 
 export const statusColorMap = {
-    "可用": "success",
-    "锁定": "info", 
-    "已预定": "warning",
-    "正在使用": "primary",
-    "维修中": "danger"
-  };
+  available: "success",
+  locked: "info",
+  booked: "warning",
+  in_use: "primary",
+  under_maintence: "danger",
+};
 
-export const statusMapReverse = {
-    "可用": "available",
-    "锁定": "locked",
-    "已预定": "booked",
-    "正在使用": "in_use",
-    "维修中": "under_maintenance"
-  };
-  
-  export const roomTypeMapReverse = {
-    "教室": "classroom",
-    "圆桌": "round_table"
-  };
-  
+
+export const meetingRoomStatus = {
+  AVAILABLE: "available",
+  LOCKED: "locked",
+  BOOKED: "booked",
+  IN_USE: "in_use",
+  UNDER_MAINTENANCE: "under_maintenance"
+} as const;
+
+// 推导出联合类型
+export type MeetingRoomStatus = typeof meetingRoomStatus[keyof typeof meetingRoomStatus];

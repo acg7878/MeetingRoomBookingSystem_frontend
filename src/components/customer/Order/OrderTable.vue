@@ -40,8 +40,8 @@
           支付
         </el-button>
         <el-tooltip
-          v-if="row.paymentStatus === 'paid'"
-          :content="isCancelDisabled(row) ? '已经开始，无法取消' : ''"
+          v-if="row.paymentStatus === 'unpaid' || row.paymentStatus === 'paid'"
+          :content="isCancelDisabled(row) ? '已经开始，无法取消' : '请求取消订单'"
           placement="top"
         >
           <el-button

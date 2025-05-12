@@ -67,7 +67,7 @@ export const dynamicRoutes = [
     path: "/index/admin/meeting-rooms",
     name: "MeetingRoomManagement",
     meta: { title: "会议室管理", roles: ["admin"], icon: "Lock" },
-    component: () => import("@/views/admin/MeetingRoomManagement.vue"),
+    component: () => import("@/views/admin/MeetingRoomManagement2.vue"),
   },
   {
     path: "/index/admin/users",
