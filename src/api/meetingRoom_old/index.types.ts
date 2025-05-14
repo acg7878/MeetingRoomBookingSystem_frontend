@@ -36,6 +36,7 @@ export interface MeetingRoomFliterData {
   roomType: RoomType;
   seatCount: number;
   pricePerHour: number;
+  equipments: string[];
 }
 
 export interface ResponseData<T = any> {

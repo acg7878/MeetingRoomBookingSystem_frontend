@@ -8,7 +8,7 @@
       />
       <el-table-column label="状态" align="center">
         <template #default="{ row }">
-          <el-tag :type="statusColorMap[statusMap[row.status]]">
+          <el-tag :type="statusColorMap[row.status]">
             {{ statusMap[row.status] }}
           </el-tag>
         </template>

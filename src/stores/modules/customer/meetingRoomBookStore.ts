@@ -1,16 +1,21 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { getEquipmentList } from "@/api/equipment";
-import type { MeetingRoomFliterData } from "@/api/meetingRoom_old/index.types";
-import { bookMeetingRoom, getMeetingRoomByFilter } from "@/api/meetingRoom_old";
+import type { MeetingRoomFliterData } from "@/types/meetingRoom";
+import { bookMeetingRoom, getMeetingRoomByFilter } from "@/api/meetingRoom";
 import { ElMessage } from "element-plus";
 export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
   // 筛选条件
-  const filterForm = ref({
-    startTime: 0, // 开始时间
-    endTime: 0, // 结束时间
-    attendees: 1, // 参会人数
-    equipment: [], // 所需设备
+  const filterForm = ref<{
+    startTime: number;
+    endTime: number;
+    attendees: number;
+    equipments: string[]; // 明确声明为字符串数组
+  }>({
+    startTime: 0,
+    endTime: 0,
+    attendees: 1,
+    equipments: [], // 初始化为空数组
   });
   // 筛选后的会议室列表
   const meetingRooms = ref<MeetingRoomFliterData[]>([]);
@@ -34,9 +39,9 @@ export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
         startTime: filterForm.value.startTime,
         endTime: filterForm.value.endTime,
         attendees: filterForm.value.attendees,
-        equipment: filterForm.value.equipment,
+        equipment: filterForm.value.equipments,
       });
-      console.log("后端返回的数据：", response.data); // 打印返回的数据
+      //console.log("后端返回的数据：", response.data); // 打印返回的数据
       if (response.code === 200) {
         if (response.data.length === 0) {
           // 如果返回的数据为空数组
@@ -58,15 +63,15 @@ export const useMeetingRoomBookStore = defineStore("meetingRoomBook", () => {
   const bookMeetingRoomAction = async (bookingData: {
     meetingRoomName: string;
     customerName: string;
-    startTime: string;
-    endTime: string;
+    startTime: number;
+    endTime: number;
   }) => {
     try {
       const response = await bookMeetingRoom(bookingData);
 
       // 检查后端返回的 code
       if (response.code === 200) {
-        ElMessage.success(response.message || "预订成功！");
+        ElMessage.success("预订成功！");
       } else {
         ElMessage.error(response.message || "预订失败！");
       }

@@ -1,6 +1,6 @@
 import axios from "axios";
 import { handleRequest } from "@/utils/axios";
-import type { meetingRoom, meetingRoomUpdate } from "@/types/meetingRoom";
+import type { meetingRoom, MeetingRoomFliterData, meetingRoomUpdate } from "@/types/meetingRoom";
 import { takeAccessToken } from "@/api/auth";
 
 axios.interceptors.request.use((config) => {
@@ -33,3 +33,35 @@ export const createMeetingRoom = (data: meetingRoom) =>
 // 更新会议室
 export const updateMeetingRoom = (data: meetingRoomUpdate) =>
   handleRequest<void>(axios.post(`/meeting-rooms/update`, data));
+
+// 预订会议室
+export const bookMeetingRoom = (bookingData: {
+  meetingRoomName: string;
+  customerName: string;
+  startTime: number;
+  endTime: number;
+}) =>
+  handleRequest<void>(
+    axios.post("/meeting-rooms/book", {
+      meetingRoomName: bookingData.meetingRoomName,
+      customerName: bookingData.customerName,
+      startTime: bookingData.startTime,
+      endTime: bookingData.endTime,
+    })
+  );
+
+// 根据筛选条件获取会议室列表接口
+export const getMeetingRoomByFilter = (filterCriteria: {
+  startTime: number;
+  endTime: number;
+  attendees: number;
+  equipment: string[];
+}) =>
+  handleRequest<MeetingRoomFliterData[]>(
+    axios.post("/meeting-rooms/fliter", {
+      startTime: filterCriteria.startTime,
+      endTime: filterCriteria.endTime,
+      attendees: filterCriteria.attendees,
+      equipment: filterCriteria.equipment,
+    })
+  );

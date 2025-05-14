@@ -45,7 +45,7 @@ export const useMeetingRoomStore = defineStore("admin_meetingRoom", () => {
     roomType: "classroom",
     seatCount: 0,
     pricePerHour: 0.0,
-    status: "available",
+    status: meetingRoomStatus.AVAILABLE,
     equipments: [],
   });
 

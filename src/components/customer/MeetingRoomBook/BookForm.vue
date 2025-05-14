@@ -27,7 +27,7 @@
     </el-form-item>
     <el-form-item label="所需设备" prop="equipment">
       <el-select
-        v-model="filterForm.equipment"
+        v-model="filterForm.equipments"
         multiple
         placeholder="请选择设备"
       >

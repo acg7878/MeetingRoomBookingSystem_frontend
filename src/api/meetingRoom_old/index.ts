@@ -80,8 +80,8 @@ export const getMeetingRoomByFilter = (filterCriteria: {
 export const bookMeetingRoom = (bookingData: {
   meetingRoomName: string;
   customerName: string;
-  startTime: string;
-  endTime: string;
+  startTime: number;
+  endTime: number;
 }) =>
   handleRequest<void>(
     axios.post("/meeting-rooms/book", {

@@ -1,16 +1,37 @@
 <template>
+  
   <el-table :data="meetingRooms" border style="width: 100%">
     <el-table-column prop="roomName" label="会议室名称" align="center" />
     <el-table-column prop="seatCount" label="容纳人数" align="center" />
-     <el-table-column label="类型" align="center">
+    <el-table-column label="类型" align="center">
       <template #default="{ row }">
         {{ roomTypeMap[row.roomType] || "未知类型" }}
       </template>
     </el-table-column>
     <el-table-column prop="pricePerHour" label="每小时价格" align="center" />
+    <el-table-column label="设备" align="center">
+      <template #default="{ row }">
+        <template v-if="row.equipments?.length">
+          <el-tag
+            v-for="(equipment, index) in row.equipments"
+            :key="index"
+            :type="
+              filterForm.equipments.includes(equipment) ? 'primary' : 'info'
+            "
+            effect="plain"
+            class="equipment-item"
+          >
+            {{ equipment }}
+          </el-tag>
+        </template>
+        <span v-else>无设备</span>
+      </template>
+    </el-table-column>
     <el-table-column label="操作" align="center">
       <template #default="{ row }">
-        <el-button type="primary" size="small" @click="openBookingDialog(row)">预订</el-button>
+        <el-button type="primary" size="small" @click="openBookingDialog(row)"
+          >预订</el-button
+        >
       </template>
     </el-table-column>
   </el-table>
@@ -23,12 +44,12 @@
     <el-divider></el-divider>
     <el-row>
       <el-col :span="8" class="dialog-label">开始时间：</el-col>
-      <el-col :span="16">{{ formattedStartTime }}</el-col>
+      <el-col :span="16">{{ formatTimestamp(filterForm.startTime) }}</el-col>
     </el-row>
     <el-divider></el-divider>
     <el-row>
       <el-col :span="8" class="dialog-label">结束时间：</el-col>
-      <el-col :span="16">{{ formattedEndTime }}</el-col>
+      <el-col :span="16">{{ formatTimestamp(filterForm.endTime) }}</el-col>
     </el-row>
     <el-divider></el-divider>
     <el-space class="dialog-actions" justify="end">
@@ -39,15 +60,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { useMeetingRoomBookStore } from "@/stores/modules/customer/meetingRoomBookStore";
 import { storeToRefs } from "pinia";
 import { ElMessage } from "element-plus";
-import dayjs from "dayjs";
-import type { RoomType } from "@/api/meetingRoom_old/index.types";
+import { formatTimestamp } from "@/utils/time";
+import type { RoomType } from "@/types/meetingRoom";
 import { takeAccessToken } from "@/api/auth";
 import { jwtDecode } from "jwt-decode";
-import { roomTypeMap } from "@/constants/meetingRoom"; 
+import { roomTypeMap } from "@/constants/meetingRoom";
 // 使用 Pinia 的 store
 const meetingRoomBookStore = useMeetingRoomBookStore();
 const { meetingRooms, filterForm } = storeToRefs(meetingRoomBookStore);
@@ -62,18 +83,6 @@ const selectedRoom = ref<{
   seatCount: number;
   pricePerHour: number;
 } | null>(null);
-
-// 格式化时间
-const formattedStartTime = computed(() =>
-  filterForm.value.startTime
-    ? dayjs(filterForm.value.startTime).format("YYYY-MM-DD HH:mm:ss")
-    : ""
-);
-const formattedEndTime = computed(() =>
-  filterForm.value.endTime
-    ? dayjs(filterForm.value.endTime).format("YYYY-MM-DD HH:mm:ss")
-    : ""
-);
 
 // 打开预订对话框
 const openBookingDialog = (row: {
