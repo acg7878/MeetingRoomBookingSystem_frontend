@@ -1,6 +1,6 @@
 import axios from "axios";
-import type { ResponseData } from "@/api/meetingRoom_old/index.types";
-import type { Order } from "@/types/order";
+import type { ResponseData } from "@/types/meetingRoom";
+import type { CancelRequest, Order } from "@/types/order";
 import { takeAccessToken } from "@/api/auth";
 
 axios.interceptors.request.use((config) => {
@@ -38,9 +38,9 @@ export const getMyOrders = (username: string) =>
     axios.get("/order/my-orders", { params: { username } })
   );
 
-export const cancelMyOrder = (orderId: number) =>
+export const applyCancelMyOrder = (orderId: number) =>
   handleRequest<void>(
-    axios.get("/order/cancel", { params: { orderId } }) // 使用 GET 方法传递订单 ID
+    axios.get("/order/apply-cancel", { params: { orderId } }) // 使用 GET 方法传递订单 ID
   );
 
 export const payMyOrder = (orderId: number) =>
@@ -49,6 +49,23 @@ export const payMyOrder = (orderId: number) =>
   );
 
 export const getAllOrders = () =>
-  handleRequest<Order[]>(
-    axios.get("/order/all-orders")
+  handleRequest<Order[]>(axios.get("/order/all-orders"));
+
+// 获取取消申请列表
+export const getMyCancelRequests = (username: string) =>
+  handleRequest<CancelRequest[]>(
+    axios.get("/order/my-cancel-request", { params: { username } })
+  );
+
+/**
+ * 审核取消申请
+ * @param cancelRequestId 取消申请ID
+ * @param status 审核状态（"approved" 或 "rejected"）
+ */
+export const reviewCancelRequest = (orderId: number, status: string) =>
+  handleRequest<void>(
+    axios.post("/order/review-cancel-request", {
+      orderId,
+      status,
+    })
   );

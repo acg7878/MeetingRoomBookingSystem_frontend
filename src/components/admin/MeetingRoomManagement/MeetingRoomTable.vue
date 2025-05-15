@@ -36,7 +36,13 @@
             @click="openEditDialog(row)"
             >修改</el-button
           >
-          <el-button type="danger" size="small" plain>删除</el-button>
+          <el-button
+            type="danger"
+            size="small"
+            plain
+            @click="handleDelete(row.roomName)"
+            >删除</el-button
+          >
           <el-button
             type="info"
             size="small"
@@ -59,6 +65,8 @@ import {
   roomTypeMap,
 } from "@/constants/meetingRoom"; // 状态映射
 import type { meetingRoom } from "@/types/meetingRoom";
+import { deleteMeetingRoom } from "@/api/meetingRoom";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 const meetingRoomStore = useMeetingRoomStore();
 const meetingRooms = computed(() => meetingRoomStore.meetingRooms); // 获取会议室数据
@@ -82,6 +90,25 @@ const openDetailDialog = (row: meetingRoom) => {
     equipments: row.equipments ?? [], // 如果 row.equipments 是 undefined，则赋值为空数组
   }; // 将当前行数据赋值给 detailForm
   meetingRoomStore.detailDialogVisible = true; // 显示详情对话框
+};
+
+// 删除会议室
+const handleDelete = (roomName: string) => {
+  ElMessageBox.confirm(
+    `确定要删除会议室「${roomName}」吗？`,
+    "提示",
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }
+  )
+    .then(async () => {
+      await deleteMeetingRoom(roomName);
+      ElMessage.success("删除成功！");
+      meetingRoomStore.fetchMeetingRooms(); // 刷新列表
+    })
+    .catch(() => {});
 };
 
 onMounted(() => {

@@ -28,11 +28,11 @@ import { useRouter } from 'vue-router';
 import { ArrowDown } from '@element-plus/icons-vue';
 import { logout } from '@/api/auth';
 import { ElMessage } from 'element-plus';
-
+import avatarImg from '@/assets/touxiang.svg';
 const router = useRouter();
 const userInfo = ref({
   name: '张三',
-  avatar: 'https://example.com/avatar.jpg'
+  avatar: avatarImg
 });
 
 const handleCommand = (command: string) => {

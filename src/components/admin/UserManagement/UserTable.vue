@@ -22,7 +22,7 @@
     <el-table-column label="操作" align="center">
       <template #default="{ row }">
         <el-button type="primary" size="small" plain @click="userStore.openEditDialog(row)">编辑</el-button>
-        <el-button type="danger" size="small" plain>删除</el-button>
+        <el-button type="danger" size="small" plain @click="handleDelete(row.username)">删除</el-button>
       </template>
     </el-table-column>
   </el-table>
@@ -31,7 +31,28 @@
 <script lang="ts" setup>
 import { useUsersStore } from "@/stores/modules/admin/userStore";
 import { userStatusMap, userStatusColorMap } from "@/constants/user";
-import { formatTimestamp } from "@/utils/time"; // 引入时间格式化工具函数
+import { formatTimestamp } from "@/utils/time";
+import { deleteUser } from "@/api/user";
+import { ElMessageBox, ElMessage } from "element-plus";
 
 const userStore = useUsersStore();
+
+const handleDelete = (username: string) => {
+  ElMessageBox.confirm(
+    `确定要删除用户「${username}」吗？`,
+    "提示",
+    {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    }
+  )
+    .then(async () => {
+      console.log(username)
+      await deleteUser(username);
+      ElMessage.success("删除成功！");
+      userStore.fetchUsers(); // 刷新用户列表
+    })
+    .catch(() => {});
+};
 </script>

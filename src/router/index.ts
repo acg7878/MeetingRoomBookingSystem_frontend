@@ -84,8 +84,14 @@ export const dynamicRoutes = [
   {
     path: "/index/customer/order",
     name: "CustomerOrder",
-    meta: { title: "订单", roles: ["customer"], icon: "ShoppingTrolley" },
+    meta: { title: "我的订单", roles: ["customer"], icon: "ShoppingTrolley" },
     component: () => import("@/views/customer/order.vue"),
+  },
+  {
+    path: "/index/customer/apply-cancel",
+    name: "CustomerApplyOrderCancel",
+    meta: { title: "订单取消申请查看", roles: ["customer"], icon: "ShoppingTrolley" },
+    component: () => import("@/views/customer/applyCancel.vue"),
   },
   {
     path: "/index/employee/meeting-rooms",

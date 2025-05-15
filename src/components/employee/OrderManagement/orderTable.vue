@@ -41,9 +41,33 @@
       <el-table-column prop="totalPrice" label="总价" align="center" />
       <el-table-column prop="paymentStatus" label="支付状态" align="center">
         <template #default="{ row }">
-          <el-tag :type="STATUS_TAG_TYPE[row.paymentStatus]">
-            {{ STATUS_MAP[row.paymentStatus] }}
+          <el-tag :type="ORDER_STATUS_TAG_TYPE[row.paymentStatus]">
+            {{ ORDER_STATUS_MAP[row.paymentStatus] }}
           </el-tag>
+        </template>
+      </el-table-column>
+
+      <!-- 操作栏 -->
+      <el-table-column label="操作" align="center">
+        <template #default="{ row }">
+          <template v-if="row.paymentStatus === 'apply_cancel'">
+            <el-button
+              type="success"
+              size="small"
+              plain
+              @click="handleReview(row.orderId, 'approved')"
+            >
+              同意
+            </el-button>
+            <el-button
+              type="danger"
+              size="small"
+              plain
+              @click="handleReview(row.orderId, 'rejected')"
+            >
+              拒绝
+            </el-button>
+          </template>
         </template>
       </el-table-column>
     </el-table>
@@ -54,7 +78,8 @@
 import { useOrderStore } from "@/stores/modules/employee/orderStore";
 import { computed, onMounted, ref, onUnmounted } from "vue";
 import { formatTimestamp } from "@/utils/time";
-import { STATUS_MAP, STATUS_TAG_TYPE } from "@/constants/order";
+import { ORDER_STATUS_MAP, ORDER_STATUS_TAG_TYPE } from "@/constants/order";
+import { ElMessageBox } from "element-plus";
 
 // 使用 Pinia 的订单 Store
 const orderStore = useOrderStore();
@@ -157,6 +182,25 @@ const getRemainingText = (row: {
     return `距离${action}还有 ${hours} 小时`;
   } else {
     return `距离${action}还有 ${minutes} 分钟`;
+  }
+};
+
+// 处理审核操作
+const handleReview = async (orderId: number, status: string) => {
+  try {
+    await ElMessageBox.confirm(
+      `确定要${status === "approved" ? "同意" : "拒绝"}该取消申请吗？`,
+      "提示",
+      {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: status === "approved" ? "success" : "warning",
+      }
+    );
+    // 这里调用 Pinia 的审核方法
+    await orderStore.reviewCancel(orderId, status);
+  } catch {
+    // 用户取消操作，无需处理
   }
 };
 </script>

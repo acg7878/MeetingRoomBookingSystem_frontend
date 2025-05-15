@@ -34,6 +34,14 @@ export const createMeetingRoom = (data: meetingRoom) =>
 export const updateMeetingRoom = (data: meetingRoomUpdate) =>
   handleRequest<void>(axios.post(`/meeting-rooms/update`, data));
 
+// 删除会议室
+export const deleteMeetingRoom = (meetingRoomName: string) =>
+  handleRequest<void>(
+    axios.post("/meeting-rooms/delete", {
+      meetingRoomName,
+    })
+  );
+
 // 预订会议室
 export const bookMeetingRoom = (bookingData: {
   meetingRoomName: string;

@@ -35,8 +35,8 @@
       <el-table-column prop="totalPrice" label="总价格" align="center" />
       <el-table-column prop="paymentStatus" label="支付状态" align="center">
         <template #default="{ row }">
-          <el-tag :type="STATUS_TAG_TYPE[row.paymentStatus]">
-            {{ STATUS_MAP[row.paymentStatus] }}
+          <el-tag :type="ORDER_STATUS_TAG_TYPE[row.paymentStatus]">
+            {{ ORDER_STATUS_MAP[row.paymentStatus] }}
           </el-tag>
         </template>
       </el-table-column>
@@ -51,12 +51,8 @@
             支付
           </el-button>
           <el-tooltip
-            v-if="
-              row.paymentStatus === 'unpaid' || row.paymentStatus === 'paid'
-            "
-            :content="
-              isCancelDisabled(row) ? '已经开始，无法取消' : '请求取消订单'
-            "
+            v-if="row.paymentStatus === 'paid'"
+            :content="isCancelDisabled(row) ? '已经开始，无法取消' : '请求取消订单'"
             placement="top"
           >
             <el-button
@@ -84,7 +80,7 @@
 
 <script lang="ts" setup>
 import { useOrderStore } from "@/stores/modules/customer/orderStore";
-import { STATUS_MAP, STATUS_TAG_TYPE } from "@/constants/order"; // 引入状态映射常量
+import { ORDER_STATUS_MAP, ORDER_STATUS_TAG_TYPE } from "@/constants/order"; // 引入状态映射常量
 import { computed } from "vue";
 import { ElMessageBox } from "element-plus";
 import { formatTimestamp } from "@/utils/time"; // 引入时间格式化工具函数
@@ -115,12 +111,24 @@ const isCancelDisabled = (row: { startTime: number }): boolean => {
 // 取消订单
 const onCancelOrder = async (orderId: number) => {
   try {
-    await ElMessageBox.confirm("确定要取消该订单吗？", "提示", {
-      confirmButtonText: "确定",
-      cancelButtonText: "取消",
-      type: "warning",
-    });
-    await orderStore.cancelOrder(orderId); // 调用 Store 中的取消订单方法
+    await ElMessageBox.confirm(
+      `确定要取消该订单吗？<br/>
+      <div style="margin-top:8px;">
+        <b>取消退费规则：</b><br/>
+        · 提前 <b>72小时</b> 退全款<br/>
+        · 提前 <b>48小时</b> 退75%<br/>
+        · 提前 <b>24小时</b> 退25%<br/>
+        · 不足 <b>24小时</b> 不退
+      </div>`,
+      "提示",
+      {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        dangerouslyUseHTMLString: true, // 允许HTML内容
+      }
+    );
+    await orderStore.cancelOrder(orderId);
   } catch (error) {
     console.log("取消操作被用户中止或发生错误：", error);
   }

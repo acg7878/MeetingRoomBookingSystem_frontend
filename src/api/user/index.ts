@@ -70,18 +70,10 @@ export const getUserName = (): string | null => {
   }
 };
 
-// export const getUserRole = (): string | null => {
-//   try {
-//     const token = takeAccessToken(); // 获取存储的 token
-//     if (!token) {
-//       console.error("Token 不存在");
-//       return null;
-//     }
-//     // 使用 jwtDecode 解析 token
-//     const decoded: { role?: string } = jwtDecode(token);
-//     return decoded.role || null; // 返回解析出的角色，若不存在则返回 null
-//   } catch (error) {
-//     console.error("解析用户角色失败：", error);
-//     return null; // 解析失败返回 null
-//   }
-// };
+// 删除用户
+export const deleteUser = (userName: string) =>
+  handleRequest<void>(
+    axios.get(`${BASE_URL}/user/delete`, {
+      params: { userName }
+    })
+  );

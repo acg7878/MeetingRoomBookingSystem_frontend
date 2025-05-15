@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import type { Order } from "@/types/order";
-import { cancelMyOrder, getMyOrders, payMyOrder } from "@/api/order";
+import { applyCancelMyOrder, getMyOrders, payMyOrder } from "@/api/order";
 import { getUserName } from "@/api/user";
 
 export const useOrderStore = defineStore("orderStore", () => {
@@ -31,9 +31,9 @@ export const useOrderStore = defineStore("orderStore", () => {
   // 取消订单
   const cancelOrder = async (orderId: number) => {
     try {
-      const response = await cancelMyOrder(orderId);
+      const response = await applyCancelMyOrder(orderId);
       if (response.code === 200) {
-        ElMessage.success("订单取消成功！");
+        ElMessage.success("申请订单取消成功！具体退款请前往退款申请页面查看");
         // 更新订单列表
         await getMyOrderList();
       } else {
